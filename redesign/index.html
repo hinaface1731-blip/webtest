@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>АСУ-Эксперт — геофизические приборы</title>
+  <meta name="description" content="Скважинные приборы электрического, гамма- и комплексного каротажа, видеокаротаж, регистраторы ГЕОФИТ и станции контроля цементирования. Собственное производство с 2009 года, Томск.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap&subset=cyrillic" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(138,148,158,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138,148,158,.07) 1px, transparent 1px),
+        linear-gradient(rgba(138,148,158,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138,148,158,.035) 1px, transparent 1px);
+      background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+    }
+    .grid-bg-light {
+      background-image:
+        linear-gradient(rgba(15,18,21,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,18,21,.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .trace { stroke-dasharray: 1600; stroke-dashoffset: 1600; animation: draw 3.2s ease-out forwards; }
+    .trace-2 { animation-delay: .5s; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    .scan { animation: scan 4.5s linear infinite; }
+    @keyframes scan { from { transform: translateY(0); } to { transform: translateY(420px); } }
+    .tick-corner { position: relative; }
+    .tick-corner::before, .tick-corner::after {
+      content: ''; position: absolute; width: 10px; height: 10px; border-color: #FF6A13; pointer-events: none;
+    }
+    .tick-corner::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+    .tick-corner::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+    @media (prefers-reduced-motion: reduce) {
+      .trace { animation: none; stroke-dashoffset: 0; }
+      .scan { animation: none; display: none; }
+    }
+  </style>
+</head>
+<body class="bg-graphite-900 font-sans text-steel-300 antialiased">
+
+  <!-- ============ HEADER ============ -->
+  <header class="sticky top-0 z-40 border-b border-graphite-600/70 bg-graphite-900/90 backdrop-blur">
+    <div class="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="grid h-9 w-9 place-items-center bg-signal-500 font-cond text-lg font-bold text-graphite-950">X</span>
+        <span class="leading-tight">
+          <span class="block font-cond text-lg font-semibold tracking-wide text-white">АСУ-ЭКСПЕРТ</span>
+          <span class="hidden font-mono text-[10px] uppercase tracking-[.18em] text-steel-500 sm:block">НПП · Томск · с 2009</span>
+        </span>
+      </a>
+      <nav class="ml-6 hidden items-center gap-7 text-sm lg:flex">
+        <a href="#catalog" class="text-steel-300 hover:text-white">Каталог</a>
+        <a href="#products" class="text-steel-300 hover:text-white">Продукция</a>
+        <a href="#about" class="text-steel-300 hover:text-white">О компании</a>
+        <a href="#shipments" class="text-steel-300 hover:text-white">Отгрузки</a>
+        <a href="#contacts" class="text-steel-300 hover:text-white">Контакты</a>
+      </nav>
+      <div class="ml-auto flex items-center gap-4">
+        <a href="tel:+73822523702" class="hidden font-mono text-sm text-white sm:block">+7 (3822) 52-37-02</a>
+        <a href="#contacts" class="whitespace-nowrap bg-signal-500 px-4 py-2 font-cond text-sm font-semibold uppercase tracking-wider text-graphite-950 transition hover:bg-signal-400">Запросить КП</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="grid-bg relative overflow-hidden border-b border-graphite-600/70">
+      <div class="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-12 lg:px-8">
+        <div class="lg:col-span-7">
+          <p class="mb-6 inline-flex items-center gap-3 border border-graphite-600 bg-graphite-800/80 px-3 py-1.5 font-mono text-xs uppercase tracking-[.16em] text-steel-400">
+            <span class="h-1.5 w-1.5 animate-pulse bg-signal-500"></span>
+            Разработка и производство · Томск
+          </p>
+          <h1 class="font-cond text-4xl font-semibold leading-[1.05] text-white sm:text-5xl lg:text-[64px]">
+            Каротажные приборы<br>
+            с&nbsp;<span class="text-signal-500">цифровой передачей</span><br>
+            по&nbsp;одножильному кабелю
+          </h1>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-steel-400">
+            Скважинная аппаратура, регистраторы ГЕОФИТ и станции контроля цементирования для&nbsp;нефтяных, газовых, рудных и водяных скважин. Без калибровки перед записью. Совместимы со&nbsp;всеми серийными регистраторами.
+          </p>
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href="#catalog" class="bg-signal-500 px-6 py-3.5 font-cond font-semibold uppercase tracking-wider text-graphite-950 transition hover:bg-signal-400">Перейти в каталог</a>
+            <a href="#contacts" class="border border-steel-500/60 px-6 py-3.5 font-cond font-semibold uppercase tracking-wider text-white transition hover:border-white">Подобрать прибор</a>
+          </div>
+          <dl class="mt-14 grid max-w-xl grid-cols-3 border-t border-graphite-600 pt-6">
+            <div>
+              <dt class="font-mono text-[11px] uppercase tracking-widest text-steel-500">На рынке</dt>
+              <dd class="mt-1 font-cond text-3xl font-semibold text-white">с 2009</dd>
+            </div>
+            <div class="border-l border-graphite-600 pl-6">
+              <dt class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Направлений</dt>
+              <dd class="mt-1 font-cond text-3xl font-semibold text-white">5</dd>
+            </div>
+            <div class="border-l border-graphite-600 pl-6">
+              <dt class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Производство</dt>
+              <dd class="mt-1 font-cond text-3xl font-semibold text-white">своё</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Log panel -->
+        <div class="lg:col-span-5">
+          <div class="tick-corner relative border border-graphite-600 bg-graphite-950/80 shadow-2xl shadow-black/40">
+            <div class="flex items-center justify-between border-b border-graphite-600 px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest text-steel-500">
+              <span>КП-91ЭГ · запись</span>
+              <span class="flex items-center gap-2 text-signal-500"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-signal-500"></span>REC</span>
+            </div>
+            <div class="grid grid-cols-[52px_1fr] font-mono text-[10px]">
+              <div class="flex justify-between border-b border-r border-graphite-600 px-2 py-1.5 text-steel-500 col-span-2">
+                <span><span class="text-steel-400">━</span> ПС, мВ</span>
+                <span><span class="text-signal-500">━</span> ГК, мкР/ч</span>
+                <span><span class="text-sky-300">━</span> КС, Ом·м</span>
+              </div>
+              <div class="relative border-r border-graphite-600 text-steel-500">
+                <div class="flex h-[420px] flex-col justify-between py-2 pr-2 text-right">
+                  <span>1712</span><span>1716</span><span>1720</span><span>1724</span><span>1728</span><span>1732</span><span>1736</span><span>1740</span>
+                </div>
+              </div>
+              <div class="relative h-[420px] overflow-hidden">
+                <svg viewBox="0 0 300 420" preserveAspectRatio="none" class="absolute inset-0 h-full w-full" aria-hidden="true">
+                  <defs>
+                    <pattern id="g" width="30" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M30 0H0V30" fill="none" stroke="rgba(138,148,158,.12)" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="300" height="420" fill="url(#g)"/>
+                  <rect x="0" y="240" width="300" height="78" fill="rgba(255,106,19,.08)"/>
+                  <line x1="0" y1="240" x2="300" y2="240" stroke="rgba(255,106,19,.45)" stroke-dasharray="4 4"/>
+                  <line x1="0" y1="318" x2="300" y2="318" stroke="rgba(255,106,19,.45)" stroke-dasharray="4 4"/>
+                  <!-- ПС -->
+                  <path class="trace" fill="none" stroke="#A9B2BA" stroke-width="1.4"
+                    d="M70 0 L74 18 L68 34 L72 52 L66 70 L71 88 L76 104 L70 122 L73 140 L67 160 L72 178 L69 196 L74 214 L70 232 L52 246 L40 262 L36 280 L44 298 L56 312 L70 324 L73 342 L68 360 L72 378 L69 396 L72 420"/>
+                  <!-- ГК -->
+                  <path class="trace trace-2" fill="none" stroke="#FF6A13" stroke-width="1.6"
+                    d="M150 0 L166 12 L142 26 L172 38 L148 52 L180 64 L156 80 L170 94 L138 108 L162 122 L176 136 L150 150 L168 166 L144 180 L178 194 L158 210 L170 226 L130 244 L118 258 L126 272 L112 288 L122 302 L134 316 L170 330 L152 346 L184 360 L160 376 L174 392 L150 408 L166 420"/>
+                  <!-- КС -->
+                  <path class="trace" fill="none" stroke="#7DD3FC" stroke-width="1.4" style="animation-delay:1s"
+                    d="M232 0 L236 30 L230 60 L238 90 L233 120 L240 150 L234 180 L238 210 L246 236 L268 252 L282 270 L276 290 L264 308 L242 322 L236 350 L240 380 L234 420"/>
+                  <text x="292" y="284" fill="#FF6A13" font-family="IBM Plex Mono" font-size="10" text-anchor="end">коллектор</text>
+                </svg>
+                <div class="scan pointer-events-none absolute inset-x-0 top-0 h-px bg-signal-500/70 shadow-[0_0_12px_2px_rgba(255,106,19,.45)]"></div>
+              </div>
+            </div>
+            <div class="flex justify-between border-t border-graphite-600 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-steel-500">
+              <span>Глубина, м</span><span>Цифровой канал · 1 жила</span>
+            </div>
+          </div>
+          <p class="mt-3 font-mono text-[10px] uppercase tracking-widest text-steel-500">Иллюстрация. Схематичная запись ПС / ГК / КС</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CATALOG ============ -->
+    <section id="catalog" class="border-b border-graphite-600/70 bg-graphite-900">
+      <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[.2em] text-signal-500">01 / Каталог</p>
+            <h2 class="mt-3 font-cond text-3xl font-semibold text-white sm:text-4xl">Пять направлений вместо сорока пунктов меню</h2>
+          </div>
+          <p class="max-w-md text-steel-400">Выберите задачу. Внутри каждого раздела приборы сгруппированы по методу исследований.</p>
+        </div>
+
+        <div class="grid gap-px border border-graphite-600 bg-graphite-600 sm:grid-cols-2 lg:grid-cols-5">
+          <a href="pribor-kp-91eg.html" class="group flex flex-col bg-graphite-900 p-6 transition hover:bg-graphite-800">
+            <span class="font-mono text-xs text-steel-500">A</span>
+            <svg class="mt-6 h-10 w-10 text-signal-500" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="16" y="2" width="8" height="36"/><path d="M16 12h8M16 20h8M16 28h8"/><path d="M4 8c4 4-4 8 0 12s-4 8 0 12" opacity=".6"/></svg>
+            <h3 class="mt-5 font-cond text-xl font-semibold text-white">Каротажные приборы</h3>
+            <p class="mt-2 text-sm text-steel-400">Электрический и комплексный каротаж, зонды МСК, МЭП, ПС</p>
+            <span class="mt-auto pt-6 font-mono text-xs text-steel-500 group-hover:text-signal-500">11 моделей →</span>
+          </a>
+          <a href="#" class="group flex flex-col bg-graphite-900 p-6 transition hover:bg-graphite-800">
+            <span class="font-mono text-xs text-steel-500">B</span>
+            <svg class="mt-6 h-10 w-10 text-signal-500" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v36M28 2v36"/><path d="M8 14h24M8 26h24" stroke-width="3"/><circle cx="20" cy="20" r="2.5"/></svg>
+            <h3 class="mt-5 font-cond text-xl font-semibold text-white">Перфорация и муфты</h3>
+            <p class="mt-2 text-sm text-steel-400">Прихватоопределители ПО, шаблоны-локаторы ШЛМ, КП-ГТР</p>
+            <span class="mt-auto pt-6 font-mono text-xs text-steel-500 group-hover:text-signal-500">5 позиций →</span>
+          </a>
+          <a href="#" class="group flex flex-col bg-graphite-900 p-6 transition hover:bg-graphite-800">
+            <span class="font-mono text-xs text-steel-500">C</span>
+            <svg class="mt-6 h-10 w-10 text-signal-500" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="13" y="2" width="14" height="26"/><circle cx="20" cy="33" r="5"/><path d="M14 38l-6 0M26 38h6" opacity=".6"/></svg>
+            <h3 class="mt-5 font-cond text-xl font-semibold text-white">Видеокаротаж</h3>
+            <p class="mt-2 text-sm text-steel-400">Визуальный контроль колонн, фильтров и забоя скважин</p>
+            <span class="mt-auto pt-6 font-mono text-xs text-steel-500 group-hover:text-signal-500">3 модели →</span>
+          </a>
+          <a href="#" class="group flex flex-col bg-graphite-900 p-6 transition hover:bg-graphite-800">
+            <span class="font-mono text-xs text-steel-500">D</span>
+            <svg class="mt-6 h-10 w-10 text-signal-500" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="34" height="22"/><path d="M7 22l6-8 5 5 6-9 5 7 4-3"/><path d="M14 35h12M20 29v6"/></svg>
+            <h3 class="mt-5 font-cond text-xl font-semibold text-white">Регистраторы и глубина</h3>
+            <p class="mt-2 text-sm text-steel-400">ГЕОФИТ-1003, ГЕОФИТ-1008, БКТП-М2, датчики ДМГ и ДИГ</p>
+            <span class="mt-auto pt-6 font-mono text-xs text-steel-500 group-hover:text-signal-500">5 изделий →</span>
+          </a>
+          <a href="#" class="group flex flex-col bg-graphite-900 p-6 transition hover:bg-graphite-800">
+            <span class="font-mono text-xs text-steel-500">E</span>
+            <svg class="mt-6 h-10 w-10 text-signal-500" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="20" cy="22" r="14"/><path d="M20 22l7-7"/><path d="M10 22h3M27 22h3M20 12v3"/></svg>
+            <h3 class="mt-5 font-cond text-xl font-semibold text-white">Контроль цементирования</h3>
+            <p class="mt-2 text-sm text-steel-400">Расход, давление, плотность, температура в реальном времени</p>
+            <span class="mt-auto pt-6 font-mono text-xs text-steel-500 group-hover:text-signal-500">Станция СКЦ →</span>
+          </a>
+        </div>
+        <p class="mt-4 font-mono text-xs text-steel-500">Также: <a href="#" class="text-steel-300 underline decoration-graphite-600 underline-offset-4 hover:text-white">силовая электроника</a> — преобразователи тока до 1 кА, источники до 20 кВ.</p>
+      </div>
+    </section>
+
+    <!-- ============ PRODUCTS ============ -->
+    <section id="products" class="grid-bg-light bg-[#F3F4F5] text-graphite-900">
+      <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[.2em] text-signal-600">02 / Ключевые продукты</p>
+            <h2 class="mt-3 font-cond text-3xl font-semibold sm:text-4xl">Приборы, которые заказывают чаще всего</h2>
+          </div>
+          <a href="#catalog" class="font-cond font-semibold uppercase tracking-wider text-graphite-900 underline decoration-signal-500 decoration-2 underline-offset-8 hover:text-signal-600">Весь каталог →</a>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <!-- Card -->
+          <article class="group flex flex-col border border-graphite-900/15 bg-white transition hover:-translate-y-1 hover:border-graphite-900 hover:shadow-[8px_8px_0_0_#FF6A13]">
+            <div class="flex items-center justify-between border-b border-graphite-900/10 px-5 py-3">
+              <span class="border border-graphite-900 px-2 py-0.5 font-mono text-sm font-medium">КП-91ЭГ</span>
+              <span class="font-mono text-[11px] uppercase tracking-widest text-steel-500">ЭК + ГК</span>
+            </div>
+            <div class="grid h-32 place-items-center bg-graphite-900 px-4">
+              <img src="assets/tool-photo.png" alt="Скважинный прибор комплексного каротажа" class="w-full mix-blend-luminosity opacity-90">
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="font-cond text-xl font-semibold leading-snug">Комплексный прибор электрического и гамма-каротажа</h3>
+              <p class="mt-2 text-sm text-graphite-700/80">Оценка коллекторских свойств открытого ствола за один спуско-подъём.</p>
+              <ul class="mt-5 space-y-2 text-sm">
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Цифровая передача по одножильному кабелю</li>
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Без калибровки перед записью</li>
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Сопряжение со всеми регистраторами</li>
+              </ul>
+              <a href="pribor-kp-91eg.html" class="mt-auto flex items-center justify-between border-t border-graphite-900/10 pt-4 font-cond font-semibold uppercase tracking-wider group-hover:text-signal-600">Подробнее <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+
+          <article class="group flex flex-col border border-graphite-900/15 bg-white transition hover:-translate-y-1 hover:border-graphite-900 hover:shadow-[8px_8px_0_0_#FF6A13]">
+            <div class="flex items-center justify-between border-b border-graphite-900/10 px-5 py-3">
+              <span class="border border-graphite-900 px-2 py-0.5 font-mono text-sm font-medium">КП-511ВК</span>
+              <span class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Видео</span>
+            </div>
+            <div class="relative grid h-32 place-items-center overflow-hidden bg-graphite-900">
+              <svg viewBox="0 0 200 100" class="h-full w-full" aria-hidden="true"><defs><radialGradient id="v" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#2A3139"/><stop offset="1" stop-color="#0B0D10"/></radialGradient></defs><rect width="200" height="100" fill="url(#v)"/><g fill="none" stroke="#8A949E" stroke-opacity=".5"><circle cx="100" cy="50" r="12"/><circle cx="100" cy="50" r="24"/><circle cx="100" cy="50" r="38"/><circle cx="100" cy="50" r="56"/></g><path d="M122 30l10-6 4 12" fill="none" stroke="#FF6A13" stroke-width="2"/><text x="8" y="92" fill="#FF6A13" font-family="IBM Plex Mono" font-size="8">REC 00:14:32 · 412.6 м</text></svg>
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="font-cond text-xl font-semibold leading-snug">Прибор видеокаротажа водяных и газовых скважин</h3>
+              <p class="mt-2 text-sm text-graphite-700/80">Визуальный контроль эксплуатационных колонн, фильтров и забоя.</p>
+              <ul class="mt-5 space-y-2 text-sm">
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Трещины, смятие труб, качество швов</li>
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Песчаные пробки и недоворот муфт</li>
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Заусенцы и дефекты внутри труб</li>
+              </ul>
+              <a href="#" class="mt-auto flex items-center justify-between border-t border-graphite-900/10 pt-4 font-cond font-semibold uppercase tracking-wider group-hover:text-signal-600">Подробнее <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+
+          <article class="group flex flex-col border border-graphite-900/15 bg-white transition hover:-translate-y-1 hover:border-graphite-900 hover:shadow-[8px_8px_0_0_#FF6A13]">
+            <div class="flex items-center justify-between border-b border-graphite-900/10 px-5 py-3">
+              <span class="border border-graphite-900 px-2 py-0.5 font-mono text-sm font-medium">ГЕОФИТ-1008</span>
+              <span class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Регистратор</span>
+            </div>
+            <div class="grid h-32 place-items-center bg-graphite-900">
+              <svg viewBox="0 0 200 100" class="h-full w-full" aria-hidden="true"><rect x="30" y="16" width="140" height="68" fill="#161A1F" stroke="#2A3139"/><g stroke="#2A3139"><path d="M30 33h140M30 50h140M30 67h140M65 16v68M100 16v68M135 16v68"/></g><path d="M30 60 L48 52 L62 58 L80 36 L96 44 L112 28 L130 48 L146 40 L170 46" fill="none" stroke="#FF6A13" stroke-width="1.6"/><path d="M30 70 L50 66 L70 72 L92 62 L110 68 L130 60 L150 66 L170 62" fill="none" stroke="#A9B2BA" stroke-width="1.2"/></svg>
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="font-cond text-xl font-semibold leading-snug">Каротажный регистратор и лаборатория ГЕОФИТ</h3>
+              <p class="mt-2 text-sm text-graphite-700/80">Запись ГИС, акустики и технологических параметров в реальном времени.</p>
+              <ul class="mt-5 space-y-2 text-sm">
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Запись по глубине или по времени</li>
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Линейные и нелинейные калибровки</li>
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Оценка качества каротажа на месте</li>
+              </ul>
+              <a href="#" class="mt-auto flex items-center justify-between border-t border-graphite-900/10 pt-4 font-cond font-semibold uppercase tracking-wider group-hover:text-signal-600">Подробнее <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+
+          <article class="group flex flex-col border border-graphite-900/15 bg-white transition hover:-translate-y-1 hover:border-graphite-900 hover:shadow-[8px_8px_0_0_#FF6A13]">
+            <div class="flex items-center justify-between border-b border-graphite-900/10 px-5 py-3">
+              <span class="border border-graphite-900 px-2 py-0.5 font-mono text-sm font-medium">СКЦ</span>
+              <span class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Цементаж</span>
+            </div>
+            <div class="grid h-32 grid-cols-2 gap-px bg-graphite-600">
+              <div class="flex flex-col justify-center bg-graphite-900 px-4"><span class="font-mono text-[10px] uppercase text-steel-500">Давление опрессовки</span><span class="font-cond text-3xl font-semibold text-signal-500">40 МПа</span></div>
+              <div class="flex flex-col justify-center bg-graphite-900 px-4"><span class="font-mono text-[10px] uppercase text-steel-500">Датчиков</span><span class="font-cond text-3xl font-semibold text-white">4 типа</span></div>
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="font-cond text-xl font-semibold leading-snug">Станция контроля цементирования скважин</h3>
+              <p class="mt-2 text-sm text-graphite-700/80">Контроль заливки ствола в реальном времени и снижение риска аварии.</p>
+              <ul class="mt-5 space-y-2 text-sm">
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Расход, давление, плотность, температура</li>
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Опрессовка на 40 МПа</li>
+                <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 bg-signal-500"></span>Отчёты в графиках и таблицах</li>
+              </ul>
+              <a href="#" class="mt-auto flex items-center justify-between border-t border-graphite-900/10 pt-4 font-cond font-semibold uppercase tracking-wider group-hover:text-signal-600">Подробнее <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WHY US ============ -->
+    <section id="about" class="grid-bg border-y border-graphite-600/70 bg-graphite-950">
+      <div class="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-12 lg:px-8">
+        <div class="lg:col-span-4">
+          <p class="font-mono text-xs uppercase tracking-[.2em] text-signal-500">03 / Почему мы</p>
+          <h2 class="mt-3 font-cond text-3xl font-semibold text-white sm:text-4xl">Разрабатываем, производим и&nbsp;сопровождаем сами</h2>
+          <p class="mt-5 text-steel-400">Научно-производственное предприятие из Томска. От схемотехники и ПО до сборки, испытаний и сервиса — без посредников.</p>
+          <img src="assets/log-diagram.png" alt="Пример каротажной диаграммы, полученной оборудованием АСУ-Эксперт" class="mt-8 hidden w-full border border-graphite-600 opacity-80 grayscale lg:block">
+        </div>
+        <div class="grid gap-px self-start border border-graphite-600 bg-graphite-600 sm:grid-cols-2 lg:col-span-8">
+          <div class="bg-graphite-950 p-8">
+            <span class="font-mono text-sm text-signal-500">[ 2009 ]</span>
+            <h3 class="mt-4 font-cond text-2xl font-semibold text-white">17 лет опыта</h3>
+            <p class="mt-2 text-steel-400">Приборы работают у сервисных и добывающих компаний, на морских платформах и в рудной геофизике.</p>
+          </div>
+          <div class="bg-graphite-950 p-8">
+            <span class="font-mono text-sm text-signal-500">[ ЦЕХ ]</span>
+            <h3 class="mt-4 font-cond text-2xl font-semibold text-white">Своё производство</h3>
+            <p class="mt-2 text-steel-400">Электроника, механика и программное обеспечение разрабатываются и собираются в Томске.</p>
+          </div>
+          <div class="bg-graphite-950 p-8">
+            <span class="font-mono text-sm text-signal-500">[ 1 ЖИЛА ]</span>
+            <h3 class="mt-4 font-cond text-2xl font-semibold text-white">Цифровая телеметрия</h3>
+            <p class="mt-2 text-steel-400">Одновременное измерение и передача всех параметров по одножильному кабелю во всём диапазоне.</p>
+          </div>
+          <div class="bg-graphite-950 p-8">
+            <span class="font-mono text-sm text-signal-500">[ ЛЮБОЙ ]</span>
+            <h3 class="mt-4 font-cond text-2xl font-semibold text-white">Совместимость</h3>
+            <p class="mt-2 text-steel-400">Сопряжение со всеми выпускаемыми каротажными регистраторами. Не нужно менять парк оборудования.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SHIPMENTS ============ -->
+    <section id="shipments" class="bg-graphite-900">
+      <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mb-10 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[.2em] text-signal-500">04 / Журнал отгрузок</p>
+            <h2 class="mt-3 font-cond text-3xl font-semibold text-white sm:text-4xl">Последние поставки</h2>
+          </div>
+          <a href="#" class="font-mono text-xs uppercase tracking-widest text-steel-400 hover:text-white">Все новости →</a>
+        </div>
+        <div class="overflow-x-auto border border-graphite-600">
+          <table class="w-full min-w-[640px] text-left text-sm">
+            <thead class="bg-graphite-800 font-mono text-[11px] uppercase tracking-widest text-steel-500">
+              <tr><th class="px-5 py-3 font-medium">Дата</th><th class="px-5 py-3 font-medium">Событие</th><th class="px-5 py-3 font-medium">Изделие</th></tr>
+            </thead>
+            <tbody class="divide-y divide-graphite-600">
+              <tr class="hover:bg-graphite-800/60"><td class="whitespace-nowrap px-5 py-4 font-mono text-steel-400">06.06.2026</td><td class="px-5 py-4 text-white">Выигран тендер на поставку приборов комплексного каротажа</td><td class="px-5 py-4 font-mono text-signal-500">КП-244ГТР, КП-245ГТР, КП-247ГТР</td></tr>
+              <tr class="hover:bg-graphite-800/60"><td class="whitespace-nowrap px-5 py-4 font-mono text-steel-400">19.05.2026</td><td class="px-5 py-4 text-white">Отгрузка в ООО «Морские платформы»</td><td class="px-5 py-4 font-mono text-signal-500">ЗК-01МСК</td></tr>
+              <tr class="hover:bg-graphite-800/60"><td class="whitespace-nowrap px-5 py-4 font-mono text-steel-400">18.05.2026</td><td class="px-5 py-4 text-white">Отгрузка в ООО «Геотехконсалтинг»</td><td class="px-5 py-4 font-mono text-signal-500">КП-91ЭГВП-02</td></tr>
+              <tr class="hover:bg-graphite-800/60"><td class="whitespace-nowrap px-5 py-4 font-mono text-steel-400">04.05.2026</td><td class="px-5 py-4 text-white">Отгрузка в ООО «Морские платформы»</td><td class="px-5 py-4 font-mono text-signal-500">КП-71ЭГТРВП-02</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACTS ============ -->
+    <section id="contacts" class="border-t border-graphite-600/70 bg-signal-500 text-graphite-950">
+      <div class="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <div>
+          <p class="font-mono text-xs uppercase tracking-[.2em]">05 / Контакты</p>
+          <h2 class="mt-3 font-cond text-4xl font-semibold leading-tight sm:text-5xl">Подберём прибор под&nbsp;вашу задачу и&nbsp;регистратор</h2>
+          <dl class="mt-10 space-y-5">
+            <div class="flex flex-wrap items-baseline gap-x-6 border-t border-graphite-950/25 pt-4">
+              <dt class="w-28 font-mono text-xs uppercase tracking-widest">Телефон</dt>
+              <dd><a href="tel:+73822523702" class="font-cond text-2xl font-semibold hover:underline">+7 (3822) 52-37-02</a></dd>
+            </div>
+            <div class="flex flex-wrap items-baseline gap-x-6 border-t border-graphite-950/25 pt-4">
+              <dt class="w-28 font-mono text-xs uppercase tracking-widest">E-mail</dt>
+              <dd><a href="mailto:info@asu-expert.ru" class="font-cond text-2xl font-semibold hover:underline">info@asu-expert.ru</a></dd>
+            </div>
+            <div class="flex flex-wrap items-baseline gap-x-6 border-t border-graphite-950/25 pt-4">
+              <dt class="w-28 font-mono text-xs uppercase tracking-widest">Город</dt>
+              <dd class="font-cond text-2xl font-semibold">Томск</dd>
+            </div>
+          </dl>
+        </div>
+        <form class="self-start bg-graphite-950 p-6 text-steel-300 sm:p-8" onsubmit="event.preventDefault(); this.querySelector('[data-ok]').classList.remove('hidden');">
+          <p class="font-mono text-xs uppercase tracking-widest text-steel-500">Запрос коммерческого предложения</p>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <label class="block"><span class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Имя</span><input required class="mt-1.5 w-full border border-graphite-600 bg-graphite-900 px-3 py-2.5 text-white outline-none focus:border-signal-500"></label>
+            <label class="block"><span class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Компания</span><input class="mt-1.5 w-full border border-graphite-600 bg-graphite-900 px-3 py-2.5 text-white outline-none focus:border-signal-500"></label>
+            <label class="block sm:col-span-2"><span class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Телефон или e-mail</span><input required class="mt-1.5 w-full border border-graphite-600 bg-graphite-900 px-3 py-2.5 text-white outline-none focus:border-signal-500"></label>
+            <label class="block sm:col-span-2"><span class="font-mono text-[11px] uppercase tracking-widest text-steel-500">Задача: метод, тип скважины, регистратор</span><textarea rows="3" class="mt-1.5 w-full border border-graphite-600 bg-graphite-900 px-3 py-2.5 text-white outline-none focus:border-signal-500"></textarea></label>
+          </div>
+          <button class="mt-6 w-full bg-signal-500 px-6 py-3.5 font-cond font-semibold uppercase tracking-wider text-graphite-950 transition hover:bg-signal-400">Отправить запрос</button>
+          <p data-ok class="mt-4 hidden font-mono text-xs text-signal-400">Демо: форма не отправляет данные.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-graphite-950">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-8 font-mono text-xs text-steel-500 sm:px-6 lg:px-8">
+      <span>© 2009–2026 ООО «АСУ-Эксперт»</span>
+      <span class="flex gap-6"><a href="#" class="hover:text-white">Реквизиты</a><a href="#" class="hover:text-white">Сертификаты</a><a href="#" class="hover:text-white">Заказчики</a></span>
+    </div>
+  </footer>
+</body>
+</html>
