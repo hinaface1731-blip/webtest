@@ -416,7 +416,7 @@ def build_product(slug):
 <section class="section">
   <div class="sec-head"><h2 class="sec-title rv">{e(c['short'])}: другие приборы</h2><a class="link" href="{c['slug']}.html">Весь раздел</a></div>
   <div class="pgrid">{''.join(product_card(s, i) for i, s in enumerate(related))}</div>
-</section>'''
+</section>''' + band(BAND_FIELD if c['slug'] in ('electric', 'registrators') else BAND_WELL)
     write(slug, page(slug, p['name'] + ' — ' + p['kind'], body, desc=p['tag'], active='catalog'))
 
 
