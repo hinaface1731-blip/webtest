@@ -149,7 +149,7 @@ def clean(fragment):
     for p in soup.find_all('p'):
         txt = p.get_text(' ', strip=True)
         kids = [k for k in p.children if not (isinstance(k, NavigableString) and not k.strip())]
-        if txt and len(txt) < 90 and len(kids) == 1 and isinstance(kids[0], Tag) and kids[0].name == 'strong' \
+        if txt and len(txt) < 48 and len(kids) == 1 and isinstance(kids[0], Tag) and kids[0].name == 'strong' \
                 and not p.find('img') and p.find_parent('table') is None:
             p.name = 'h3'
             p.clear()
@@ -185,7 +185,7 @@ def clean(fragment):
     html = html.replace('\xa0', ' ')
     html = re.sub(r'<strong>\s*_+\s*([^<_]+?)\s*_+\s*</strong>', lambda m: '<h3>' + m.group(1).capitalize() + '</h3>', html)
     # отдельная строка из жирного текста между переносами -> подзаголовок
-    html = re.sub(r'(^|<br/>|\n|</ul>|</p>)\s*<strong>\s*([^<]{2,90}?)\s*:?\s*</strong>\s*(?=<br/>|\n|<ul>|<img)',
+    html = re.sub(r'(^|<br/>|\n|</ul>|</p>)\s*<strong>\s*([^<]{2,48}?)\s*:?\s*</strong>\s*(?=<br/>|\n|<ul>|<img)',
                   lambda m: m.group(1) + '<h3>' + m.group(2).strip().rstrip(':') + '</h3>', html)
     html = re.sub(r'<h3>([^<]*)</h3>\s*<br/>', r'<h3>\1</h3>', html)
     html = re.sub(r'</ul>\s*<br/>', '</ul>', html)

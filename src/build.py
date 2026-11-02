@@ -188,19 +188,57 @@ def clean_news():
 
 NEWS = clean_news()
 
+# ---------------------------------------------------------------- фотографии из открытых коллекций
+
+CREDITS = json.load(open(os.path.join(DATA, 'photo-credits.json'), encoding='utf-8'))
+PHOTO_FILES = {
+    'commons:135488664': 'tomsk-krasnoarmeyskaya-92.jpg',
+    'commons:141490687': 'drill-core-boxes.jpg',
+    'commons:101524389': 'core-drill-rig-1968.jpg',
+    'commons:160072267': 'drilling-rig.jpg',
+    'commons:7259897': 'taiga-torch.jpg',
+    'commons:11409674': 'well-log-usgs-1981.jpg',
+    'commons:26031515': 'tomsk-view.jpg',
+    'commons:52624830': 'borehole-camera.webm',
+}
+
+
+def photo(name):
+    return 'photos/' + name
+
+
+def credits_html():
+    rows = []
+    for c in CREDITS:
+        rows.append(f'<a href="{e(c["page"])}" target="_blank" rel="noopener">{e(c["title"])}</a> — {e((c["creator"] or "автор не указан")[:60])}, {e(c["license"])}')
+    return 'Фото: ' + '; '.join(rows) + ', Wikimedia Commons.'
+
+
+# методы для подбора прибора (по описаниям приборов)
+METHODS = [
+    ('ks', 'КС и ПС'), ('gk', 'Гамма-каротаж'), ('rt', 'Резистивиметрия и термометрия'),
+    ('vp', 'Вызванная поляризация'), ('lm', 'Локация муфт'), ('video', 'Видеокаротаж'), ('reg', 'Регистрация и глубина'),
+]
+PRODUCT_METHODS = {
+    'geofit-1003': 'reg', 'geofit-1108': 'reg', 'depth-system': 'reg', 'bktp-m2': 'reg', 'dig': 'reg',
+    'kp-51e': 'ks', 'kp-52e': 'ks', 'kp-61e': 'ks rt', 'kp-71egtr': 'ks gk rt', 'kp-71egrtvp-02': 'ks gk vp',
+    'kp-81eg': 'ks gk', 'kp-91eg': 'ks gk', 'kp-82bkr': 'ks gk', 'kp-242eg': 'ks gk', 'zk-01msk': 'ks',
+    'kp-240gtr': 'gk rt', 'kp-241gtrl': 'gk rt lm', 'kp-410vk': 'video', 'kp-511vk': 'video', 'kp-512vk': 'video',
+}
+
 # ---------------------------------------------------------------- шаблон
 
 LOGO = '''<svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true">
-<rect width="48" height="48" rx="11" class="lm-bg"/>
+<rect width="48" height="48" class="lm-bg"/>
 <text x="7" y="23" class="lm-e">E</text><text x="17" y="38" class="lm-pert">PERT</text>
 <path d="M10 39 L29 12 L27 22 L39 5 L22 31 L24 21 Z" class="lm-bolt"/></svg>'''
 
 
 def nav_html(active):
     items = [('catalog', 'Каталог'), ('company', 'О компании'), ('clients', 'Заказчики'),
-             ('news', 'Новости'), ('certificates', 'Сертификаты'), ('contacts', 'Контакты')]
+             ('news', 'Новости'), ('contacts', 'Контакты')]
     mega = ''.join(
-        f'''<div class="mega-col"><a class="mega-cat" href="{c['slug']}.html"><span class="mono">{c['num']}</span>{e(c['title'])}</a>
+        f'''<div class="mega-col"><a class="mega-cat" href="{c['slug']}.html">{e(c['title'])}</a>
 <ul>{''.join(f'<li><a href="{s}.html">{e(PRODUCTS[s]["name"])}</a></li>' for s in c['products'])}</ul></div>'''
         for c in CATEGORIES)
     links = []
@@ -214,10 +252,11 @@ def nav_html(active):
     return ''.join(links)
 
 
-def page(slug, title, body, desc='', active=None, extra_head='', extra_js=''):
-    full_title = 'ООО «АСУ-ЭКСПЕРТ» — геофизические приборы' if slug == 'index' else f'{title} — АСУ-ЭКСПЕРТ'
+def page(slug, title, body, desc='', active=None, foot_photo=None):
+    full_title = 'ООО «АСУ-ЭКСПЕРТ» — геофизические приборы, Томск' if slug == 'index' else f'{title} — АСУ-ЭКСПЕРТ'
     desc = desc or 'Научно-производственное предприятие ООО «АСУ-ЭКСПЕРТ», Томск: скважинные геофизические приборы, каротажные лаборатории, регистраторы и видеокаротаж.'
-    mobile_cats = ''.join(f'<a href="{c["slug"]}.html">{e(c["short"])}</a>' for c in CATEGORIES)
+    fp, fcap = foot_photo or ('tomsk-krasnoarmeyskaya-92.jpg', 'Томск, улица Красноармейская, 92')
+    mlinks = ''.join(f'<a href="{c["slug"]}.html">{e(c["short"])}</a>' for c in CATEGORIES)
     return f'''<!doctype html>
 <html lang="ru">
 <head>
@@ -225,71 +264,51 @@ def page(slug, title, body, desc='', active=None, extra_head='', extra_js=''):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(full_title)}</title>
 <meta name="description" content="{e(desc)}">
-<meta name="theme-color" content="#05080d">
+<meta name="theme-color" content="#eef1f3">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <script>document.documentElement.classList.add('js')</script>
-{extra_head}
 </head>
 <body class="page-{slug}">
 <a class="skip" href="#main">К содержимому</a>
 <header class="hdr" id="hdr">
   <div class="hdr-in">
-    <a class="logo" href="index.html" aria-label="АСУ-ЭКСПЕРТ — на главную">{LOGO}<span class="logo-txt"><b>АСУ-ЭКСПЕРТ</b><small>научно-производственное предприятие</small></span></a>
+    <a class="logo" href="index.html" aria-label="АСУ-ЭКСПЕРТ, на главную">{LOGO}<span class="logo-txt">АСУ-ЭКСПЕРТ</span></a>
     <nav class="nav" aria-label="Основное меню"><ul>{nav_html(active)}</ul></nav>
-    <a class="hdr-phone mono" href="tel:{PHONE_HREF}">{PHONE}</a>
+    <a class="hdr-phone" href="tel:{PHONE_HREF}">{PHONE}</a>
     <a class="btn btn-sm btn-red hdr-cta" href="contacts.html#request">Запросить КП</a>
     <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mnav"><span></span><span></span></button>
   </div>
 </header>
 <div class="mnav" id="mnav" hidden>
   <nav class="mnav-in" aria-label="Мобильное меню">
-    <p class="mono mnav-lbl">Каталог</p>
-    <div class="mnav-cats">{mobile_cats}</div>
-    <p class="mono mnav-lbl">Компания</p>
-    <a href="company.html">О компании</a><a href="clients.html">Заказчики</a><a href="news.html">Новости</a>
-    <a href="certificates.html">Сертификаты и отзывы</a><a href="contacts.html">Контакты</a>
-    <div class="mnav-contacts"><a class="mono" href="tel:{PHONE_HREF}">{PHONE}</a><a class="mono" href="mailto:{EMAIL}">{EMAIL}</a></div>
+    <a href="catalog.html">Каталог</a>{mlinks}<a href="company.html">О компании</a><a href="clients.html">Заказчики</a>
+    <a href="news.html">Новости</a><a href="certificates.html">Сертификаты</a><a href="contacts.html">Контакты</a>
+    <div class="mnav-contacts"><a href="tel:{PHONE_HREF}">{PHONE}</a><a href="mailto:{EMAIL}">{EMAIL}</a></div>
   </nav>
 </div>
-<aside class="gauge" aria-hidden="true">
-  <span class="gauge-lbl mono">ГЛУБИНА</span>
-  <div class="gauge-track"><div class="gauge-ticks"></div><div class="gauge-probe"></div></div>
-  <span class="gauge-val mono"><b id="depthVal">0000.0</b> м</span>
-</aside>
 <main id="main">
 {body}
 </main>
 <footer class="ftr">
-  <div class="wrap">
-    <div class="ftr-cta">
-      <p class="eyebrow mono">связь с производством</p>
-      <h2 class="ftr-title">Подберём прибор под вашу скважину</h2>
-      <div class="ftr-actions">
-        <a class="btn btn-red" href="mailto:{EMAIL}?subject=Запрос%20с%20сайта">Написать инженеру</a>
-        <a class="btn btn-ghost" href="tel:{PHONE_HREF}">{PHONE}</a>
-      </div>
+  <figure class="ftr-photo"><img src="{photo(fp)}" alt="{e(fcap)}" loading="lazy"><figcaption>{e(fcap)}</figcaption></figure>
+  <div class="ftr-menu">
+    <a class="logo" href="index.html" aria-label="АСУ-ЭКСПЕРТ, на главную">{LOGO}<span class="logo-txt">АСУ-ЭКСПЕРТ</span></a>
+    <nav class="ftr-links" aria-label="Разделы сайта">
+      <a href="catalog.html">Каталог</a><a href="company.html">О компании</a><a href="clients.html">Заказчики</a>
+      <a href="news.html">Новости</a><a href="certificates.html">Сертификаты</a><a href="contacts.html">Контакты</a>
+    </nav>
+    <div class="ftr-info">
+      <div><a href="tel:{PHONE_HREF}">{PHONE}</a><br><a href="mailto:{EMAIL}">{EMAIL}</a></div>
+      <div>{ADDRESS}</div>
     </div>
-    <div class="ftr-grid">
-      <div class="ftr-brand">
-        <a class="logo" href="index.html">{LOGO}<span class="logo-txt"><b>АСУ-ЭКСПЕРТ</b><small>научно-производственное предприятие</small></span></a>
-        <p>Разработка и производство скважинных геофизических приборов и регистрирующей аппаратуры с 2009 года.</p>
-      </div>
-      <div><p class="mono ftr-h">Каталог</p>{''.join(f'<a href="{c["slug"]}.html">{e(c["short"])}</a>' for c in CATEGORIES)}</div>
-      <div><p class="mono ftr-h">Компания</p><a href="company.html">О компании</a><a href="clients.html">Заказчики</a><a href="news.html">Новости</a><a href="certificates.html">Сертификаты</a></div>
-      <div><p class="mono ftr-h">Контакты</p><a href="tel:{PHONE_HREF}">{PHONE}</a><a href="mailto:{EMAIL}">{EMAIL}</a><span>{ADDRESS}</span></div>
-    </div>
-    <div class="ftr-bottom mono"><span>© 2009–{YEAR} ООО «АСУ-ЭКСПЕРТ»</span><span>ИНН 7017251277 · ОГРН 1097017020627</span></div>
+    <div class="ftr-legal"><p>© 2009–{YEAR} ООО «АСУ-ЭКСПЕРТ», ИНН 7017251277, ОГРН 1097017020627</p><p>{credits_html()}</p></div>
   </div>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script src="js/main.js" defer></script>
-{extra_js}
 </body>
 </html>
 '''
@@ -299,35 +318,52 @@ def crumbs(*items):
     parts = ['<a href="index.html">Главная</a>']
     for href, label in items:
         parts.append(f'<a href="{href}">{e(label)}</a>' if href else f'<span aria-current="page">{e(label)}</span>')
-    return '<nav class="crumbs mono" aria-label="Навигация">' + '<i>/</i>'.join(parts) + '</nav>'
+    return '<nav class="crumbs" aria-label="Навигация">' + '<span aria-hidden="true">/</span>'.join(parts) + '</nav>'
+
+
+def tags(p):
+    return '<p class="tags">' + ' · '.join(e(c) for c in p['chips']) + '</p>'
 
 
 def product_card(slug, i=0):
     p = PRODUCTS[slug]
-    chips = ''.join(f'<li>{e(c)}</li>' for c in p['chips'][:3])
-    return f'''<a class="pcard reveal" href="{slug}.html" style="--i:{i}">
+    return f'''<a class="pcard rv" href="{slug}.html" style="--d:{i % 3}">
   <div class="pcard-img"><img src="img/{p['img']}" alt="{e(p['name'])}" loading="lazy"></div>
   <div class="pcard-body">
-    <p class="pcard-kind mono">{e(p['kind'])}</p>
     <h3 class="pcard-name">{e(p['name'])}</h3>
+    <p class="pcard-kind">{e(p['kind'])}</p>
     <p class="pcard-tag">{e(p['tag'])}</p>
-    <ul class="chips">{chips}</ul>
+    {tags(p)}
   </div>
-  <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
 </a>'''
 
 
-def page_hero(eyebrow, title, lead='', crumb_html='', extra=''):
+def page_hero(title, lead, crumb_html, media, extra=''):
+    """media: (src, alt, caption, kind) — kind 'object' для фото прибора на белом."""
+    src, alt, cap, kind = media
+    figcap = f'<figcaption>{e(cap)}</figcaption>' if cap else ''
     return f'''<section class="phero">
-  <canvas class="phero-log" aria-hidden="true"></canvas>
-  <div class="wrap">
+  <div class="phero-text">
     {crumb_html}
-    <p class="eyebrow mono">{eyebrow}</p>
-    <h1 class="phero-title split">{title}</h1>
-    {f'<p class="phero-lead">{lead}</p>' if lead else ''}
+    <h1 class="phero-title{' big' if len(title) <= 22 else ''} rv">{title}</h1>
+    <p class="phero-lead rv" style="--d:1">{lead}</p>
     {extra}
   </div>
+  <figure class="phero-media {kind}"><img src="{src}" alt="{e(alt)}">{figcap}</figure>
 </section>'''
+
+
+def band(items):
+    """Лента из трёх фотографий перед подвалом: (файл, подпись), файл из photos/ или img/."""
+    figs = ''.join(f'<figure class="rv" style="--d:{i}"><img src="{src}" alt="{e(cap)}"><figcaption>{e(cap)}</figcaption></figure>'
+                   for i, (src, cap) in enumerate(items))
+    return f'<section class="band" aria-label="Фотографии">{figs}</section>'
+
+
+BAND_FIELD = [(photo('drilling-rig.jpg'), 'Буровая установка'), (photo('drill-core-boxes.jpg'), 'Керн в ящиках после бурения'),
+              ('img/ba951de225f5685b2383ecc0fe64f6ce.png', 'Кадр видеокаротажа АСУ-ЭКСПЕРТ')]
+BAND_WELL = [(photo('core-drill-rig-1968.jpg'), 'Колонковое бурение, 1968 год'), (photo('taiga-torch.jpg'), 'Западная Сибирь, начало 1980-х'),
+             ('img/04f973d653cbdf4ce1fdd0f4dc83f97d.png', 'Кадр видеокаротажа АСУ-ЭКСПЕРТ')]
 
 
 def toc_from(doc_html):
@@ -341,89 +377,7 @@ def toc_from(doc_html):
         return f'<h3 id="s{idx[0]}">{m.group(1)}</h3>'
     doc_html = re.sub(r'<h3>(.*?)</h3>', rep, doc_html)
     items = ''.join(f'<li><a href="#s{i + 1}">{re.sub("<[^>]+>", "", h)}</a></li>' for i, h in enumerate(heads))
-    return doc_html, f'<nav class="toc"><p class="mono">Содержание</p><ol>{items}</ol></nav>'
-
-
-# ---------------------------------------------------------------- страницы
-
-def build_product(slug):
-    p = PRODUCTS[slug]
-    c = p['cat']
-    doc = CONTENT[p['id']]['html']
-    doc, toc = toc_from(doc)
-    chips = ''.join(f'<li>{e(x)}</li>' for x in p['chips'])
-    related = [s for s in c['products'] if s != slug][:3]
-    idx = c['products'].index(slug)
-    body = f'''<section class="prod-hero">
-  <canvas class="phero-log" aria-hidden="true"></canvas>
-  <div class="wrap prod-hero-grid">
-    <div>
-      {crumbs(('catalog.html', 'Каталог'), (c['slug'] + '.html', c['short']), (None, p['name']))}
-      <p class="eyebrow mono">{c['num']}.{idx + 1:02d} · {e(p['kind'])}</p>
-      <h1 class="prod-title split">{e(p['name'])}</h1>
-      <p class="phero-lead">{e(p['tag'])}</p>
-      <ul class="chips chips-lg">{chips}</ul>
-      <div class="prod-actions">
-        <a class="btn btn-red" href="mailto:{EMAIL}?subject={e('Запрос: ' + p['name'])}">Запросить стоимость</a>
-        <a class="btn btn-ghost" href="#spec">Характеристики</a>
-      </div>
-    </div>
-    <figure class="prod-plate reveal">
-      <span class="plate-corner mono">{e(p['name'])}</span>
-      <img src="img/{p['img']}" alt="{e(p['name'])}">
-      <span class="plate-scan" aria-hidden="true"></span>
-    </figure>
-  </div>
-</section>
-<section class="doc-section" id="spec">
-  <div class="wrap doc-grid">
-    <aside class="doc-aside">
-      {toc}
-      <div class="ask">
-        <p class="mono">Нужна консультация?</p>
-        <p>Инженер подскажет комплектацию и совместимость с вашим регистратором.</p>
-        <a class="btn btn-sm btn-red" href="mailto:{EMAIL}?subject={e('Вопрос по ' + p['name'])}">Задать вопрос</a>
-      </div>
-    </aside>
-    <article class="doc reveal">
-      <div class="doc-head mono"><span>ТЕХНИЧЕСКОЕ ОПИСАНИЕ</span><span>{e(p['name'])}</span></div>
-      {doc}
-    </article>
-  </div>
-</section>
-<section class="section">
-  <div class="wrap">
-    <div class="sec-head"><p class="eyebrow mono">в том же разделе</p><h2 class="sec-title">{e(c['title'])}</h2>
-    <a class="link-arrow" href="{c['slug']}.html">Весь раздел</a></div>
-    <div class="pgrid">{''.join(product_card(s, i) for i, s in enumerate(related))}</div>
-  </div>
-</section>'''
-    write(slug, page(slug, p['name'] + ' — ' + p['kind'], body, desc=p['tag'], active='catalog'))
-
-
-def build_category(c):
-    doc = CONTENT[c['id']]['html']
-    doc, toc = toc_from(doc)
-    cards = ''.join(product_card(s, i) for i, s in enumerate(c['products']))
-    others = ''.join(
-        f'<a class="catlink" href="{o["slug"]}.html"><span class="mono">{o["num"]}</span>{e(o["title"])}</a>'
-        for o in CATEGORIES if o is not c)
-    body = page_hero(f'{c["num"]} · раздел каталога', e(c['title']), e(c['lead']),
-                     crumbs(('catalog.html', 'Каталог'), (None, c['short'])),
-                     f'<p class="phero-count mono">{len(c["products"])} {plural(len(c["products"]), "модель", "модели", "моделей")} в разделе</p>')
-    body += f'''<section class="section">
-  <div class="wrap"><div class="pgrid">{cards}</div></div>
-</section>
-<section class="doc-section">
-  <div class="wrap doc-grid">
-    <aside class="doc-aside">{toc}<div class="catlinks"><p class="mono">Другие разделы</p>{others}</div></aside>
-    <article class="doc reveal">
-      <div class="doc-head mono"><span>ОБЗОР РАЗДЕЛА</span><span>{e(c['short'])}</span></div>
-      {doc}
-    </article>
-  </div>
-</section>'''
-    write(c['slug'], page(c['slug'], c['title'], body, desc=c['lead'], active='catalog'))
+    return doc_html, f'<nav class="toc" aria-label="Содержание"><h2>Содержание</h2><ol>{items}</ol></nav>'
 
 
 def plural(n, one, few, many):
@@ -434,125 +388,174 @@ def plural(n, one, few, many):
     return many
 
 
+# ---------------------------------------------------------------- страницы
+
+def build_product(slug):
+    p = PRODUCTS[slug]
+    c = p['cat']
+    doc = CONTENT[p['id']]['html']
+    doc, toc = toc_from(doc)
+    related = [s for s in c['products'] if s != slug][:3]
+    extra = f'''{tags(p)}
+    <div class="prod-actions rv" style="--d:2">
+      <a class="btn btn-red" href="mailto:{EMAIL}?subject={e('Запрос: ' + p['name'])}">Запросить стоимость</a>
+      <a class="btn btn-tone" href="#spec">Характеристики</a>
+    </div>'''
+    body = page_hero(e(p['name']), e(p['tag']),
+                     crumbs(('catalog.html', 'Каталог'), (c['slug'] + '.html', c['short']), (None, p['name'])),
+                     ('img/' + p['img'], p['name'] + ', ' + p['kind'].lower(), '', 'object'), extra)
+    body += f'''
+<div class="doc-grid" id="spec">
+  <aside class="doc-aside">
+    {toc}
+    <div class="ask"><h2>Нужна консультация?</h2><p>Инженер подскажет комплектацию и совместимость с вашим регистратором.</p>
+    <a class="btn btn-sm btn-red" href="mailto:{EMAIL}?subject={e('Вопрос по ' + p['name'])}">Задать вопрос</a></div>
+  </aside>
+  <article class="doc rv"><h2>Техническое описание</h2>{doc}</article>
+</div>
+<section class="section">
+  <div class="sec-head"><h2 class="sec-title rv">{e(c['short'])}: другие приборы</h2><a class="link" href="{c['slug']}.html">Весь раздел</a></div>
+  <div class="pgrid">{''.join(product_card(s, i) for i, s in enumerate(related))}</div>
+</section>'''
+    write(slug, page(slug, p['name'] + ' — ' + p['kind'], body, desc=p['tag'], active='catalog'))
+
+
+def build_category(c):
+    doc = CONTENT[c['id']]['html']
+    doc, toc = toc_from(doc)
+    cards = ''.join(product_card(s, i) for i, s in enumerate(c['products']))
+    others = ''.join(f'<a href="{o["slug"]}.html">{e(o["title"])}</a>' for o in CATEGORIES if o is not c)
+    n = len(c['products'])
+    body = page_hero(e(c['short']), e(c['title']) + '. ' + e(c['lead']), crumbs(('catalog.html', 'Каталог'), (None, c['short'])),
+                     ('img/' + c['img'], c['title'], '', 'object'),
+                     f'<p class="phero-count">{n} {plural(n, "модель", "модели", "моделей")} в разделе</p>')
+    body += f'''
+<section class="section">
+  <div class="sec-head"><h2 class="sec-title rv">Модели</h2></div>
+  <div class="pgrid">{cards}</div>
+</section>
+<div class="doc-grid">
+  <aside class="doc-aside">{toc}<nav class="catlinks" aria-label="Другие разделы"><h2>Другие разделы</h2>{others}</nav></aside>
+  <article class="doc rv"><h2>Обзор раздела</h2>{doc}</article>
+</div>''' + band(BAND_WELL)
+    write(c['slug'], page(c['slug'], c['title'], body, desc=c['lead'], active='catalog'))
+
+
 def build_catalog():
     blocks = ''
     for c in CATEGORIES:
         items = ''.join(f'<li><a href="{s}.html"><span>{e(PRODUCTS[s]["name"])}</span><small>{e(PRODUCTS[s]["kind"])}</small></a></li>'
                         for s in c['products'])
-        blocks += f'''<article class="catblock reveal">
-  <a class="catblock-media" href="{c['slug']}.html"><img src="img/{c['img']}" alt="" loading="lazy"><span class="mono">{c['num']}</span></a>
+        blocks += f'''<article class="catblock">
+  <a class="catblock-media rv" href="{c['slug']}.html" aria-label="{e(c['title'])}"><img src="img/{c['img']}" alt="" loading="lazy"></a>
   <div class="catblock-body">
-    <h2><a href="{c['slug']}.html">{e(c['title'])}</a></h2>
-    <p>{e(c['lead'])}</p>
-    <ul class="catblock-list">{items}</ul>
-    <a class="link-arrow" href="{c['slug']}.html">Открыть раздел</a>
+    <h2 class="rv"><a href="{c['slug']}.html">{e(c['title'])}</a></h2>
+    <p class="rv" style="--d:1">{e(c['lead'])}</p>
+    <ul class="catblock-list rv" style="--d:2">{items}</ul>
+    <a class="link" href="{c['slug']}.html">Открыть раздел</a>
   </div>
 </article>'''
-    body = page_hero('Каталог', 'Скважинная и наземная аппаратура',
+    body = page_hero('Каталог продукции',
                      'Каротажные лаборатории, регистраторы, система глубины и скважинные приборы. На приборы оформлены декларации о соответствии ТР ТС / ЕАЭС.',
-                     crumbs((None, 'Каталог')))
-    body += f'<section class="section"><div class="wrap catblocks">{blocks}</div></section>'
+                     crumbs((None, 'Каталог')),
+                     (photo('drill-core-boxes.jpg'), 'Ящики с керном', 'Керн в ящиках после бурения', ''))
+    body += f'<section class="section catblocks">{blocks}</section>' + band(BAND_WELL)
     write('catalog', page('catalog', 'Каталог продукции', body, active='catalog'))
-
-
-def build_company():
-    req = CONTENT[2]['html']
-    body = page_hero('ООО «АСУ-ЭКСПЕРТ» · Томск', 'О компании',
-                     'ООО «АСУ-ЭКСПЕРТ» — научно-производственное предприятие из Томска. С 2009 года разрабатываем и выпускаем скважинные геофизические приборы и наземную регистрирующую аппаратуру.',
-                     crumbs((None, 'О компании')))
-    body += f'''<section class="section">
-  <div class="wrap split-2">
-    <div class="reveal">
-      <p class="eyebrow mono">что мы делаем</p>
-      <h2 class="sec-title">Разработка, производство, ремонт</h2>
-      <p class="lead">Регистрирующая аппаратура поставляется с программным обеспечением ГЕОФИТ. Оно позволяет:</p>
-      <ul class="ticks">
-        <li>мониторинг в реальном времени и архивация данных ГИС, акустического каротажа и технологических параметров;</li>
-        <li>расчёт геофизических параметров по заданным формулам;</li>
-        <li>калибровка каналов измерения и корректировка глубины по магнитным меткам;</li>
-        <li>оперативная оценка качества каротажа, автоматическое и ручное редактирование без изменения исходного файла.</li>
-      </ul>
-      <p class="company-note">Ремонт и техническое обслуживание поставленных приборов выполняем сами.</p>
-    </div>
-    <figure class="lab-figure reveal"><img src="img/fa5c25733eb8f5628b78791ae5e265a2.JPG" alt="Каротажная диаграмма, записанная регистратором ГЕОФИТ" loading="lazy"><figcaption class="mono">Каротажная диаграмма · ПО ГЕОФИТ</figcaption></figure>
-  </div>
-</section>
-{stats_html()}
-<section class="section">
-  <div class="wrap split-2">
-    <div class="reveal">
-      <p class="eyebrow mono">охрана труда</p>
-      <h2 class="sec-title">Специальная оценка условий труда</h2>
-      <p class="lead">Результаты специальной оценки условий труда (СОУТ) на рабочих местах предприятия.</p>
-    </div>
-    <figure class="paper-figure reveal"><img src="img/f5149feb3befe75edadcf171a02759d7.JPG" alt="Сводная ведомость результатов СОУТ" loading="lazy"></figure>
-  </div>
-</section>
-<section class="doc-section" id="requisites">
-  <div class="wrap doc-grid">
-    <aside class="doc-aside"><div class="ask"><p class="mono">Директор</p><p>Муратов Сергей Алексеевич, действует на основании устава</p><a class="btn btn-sm btn-ghost" href="contacts.html">Все контакты</a></div></aside>
-    <article class="doc reveal"><div class="doc-head mono"><span>РЕКВИЗИТЫ</span><span>ООО «АСУ-ЭКСПЕРТ»</span></div>{req}</article>
-  </div>
-</section>'''
-    write('company', page('company', 'О компании', body, active='company'))
 
 
 def stats_html():
     years = YEAR - 2009
-    return f'''<section class="stats">
-  <div class="wrap stats-grid">
-    <div class="stat reveal"><b class="count" data-to="{years}">0</b><span>лет разрабатываем и производим аппаратуру ГИС</span></div>
-    <div class="stat reveal"><b class="count" data-to="{len(PRODUCTS)}">0</b><span>моделей приборов и регистраторов в каталоге</span></div>
-    <div class="stat reveal"><b class="count" data-to="{len(NEWS)}" data-suffix="+">0</b><span>отгрузок, тендеров и событий в ленте новостей</span></div>
-    <div class="stat reveal"><b class="count" data-to="4">0</b><span>страны поставок: Россия, Казахстан, Узбекистан, Беларусь</span></div>
-  </div>
+    return f'''<section class="stats" aria-label="Предприятие в цифрах">
+    <div class="stat rv"><b class="count" data-to="{years}">{years}</b>лет разрабатываем и производим аппаратуру ГИС</div>
+    <div class="stat rv" style="--d:1"><b class="count" data-to="{len(PRODUCTS)}">{len(PRODUCTS)}</b>моделей приборов и регистраторов в каталоге</div>
+    <div class="stat rv" style="--d:2"><b class="count" data-to="{len(NEWS)}">{len(NEWS)}</b>отгрузок, тендеров и событий в ленте новостей</div>
+    <div class="stat rv" style="--d:3"><b class="count" data-to="4">4</b>страны поставок: Россия, Казахстан, Узбекистан, Беларусь</div>
 </section>'''
+
+
+def build_company():
+    req = CONTENT[2]['html']
+    body = page_hero('О компании',
+                     'ООО «АСУ-ЭКСПЕРТ» — научно-производственное предприятие из Томска. С 2009 года разрабатываем и выпускаем скважинные геофизические приборы и наземную регистрирующую аппаратуру.',
+                     crumbs((None, 'О компании')),
+                     (photo('tomsk-view.jpg'), 'Вид на Томск', 'Томск', ''))
+    body += f'''
+<section class="section split-2">
+  <div>
+    <h2 class="sec-title rv">Программа ГЕОФИТ</h2>
+    <p class="lead rv" style="--d:1">Регистрирующая аппаратура поставляется с программным обеспечением ГЕОФИТ. Оно позволяет:</p>
+    <ul class="ticks rv" style="--d:2">
+      <li>мониторинг в реальном времени и архивация данных ГИС, акустического каротажа и технологических параметров;</li>
+      <li>расчёт геофизических параметров по заданным формулам;</li>
+      <li>калибровка каналов измерения и корректировка глубины по магнитным меткам;</li>
+      <li>оперативная оценка качества каротажа, автоматическое и ручное редактирование без изменения исходного файла.</li>
+    </ul>
+    <p class="rv" style="--d:3">Ремонт и техническое обслуживание поставленных приборов выполняем сами.</p>
+  </div>
+  <figure class="figure rv" style="--d:1"><img src="img/fa5c25733eb8f5628b78791ae5e265a2.JPG" alt="Каротажная диаграмма, записанная регистратором ГЕОФИТ" loading="lazy"><figcaption>Каротажная диаграмма, записанная в программе ГЕОФИТ</figcaption></figure>
+</section>
+{stats_html()}
+<section class="section split-2">
+  <div>
+    <h2 class="sec-title rv">Оценка условий труда</h2>
+    <p class="lead rv" style="--d:1">Результаты специальной оценки условий труда (СОУТ) на рабочих местах предприятия.</p>
+  </div>
+  <figure class="figure rv" style="--d:1"><img src="img/f5149feb3befe75edadcf171a02759d7.JPG" alt="Сводная ведомость результатов СОУТ" loading="lazy"></figure>
+</section>
+<div class="doc-grid" id="requisites">
+  <aside class="doc-aside"><div class="ask"><h2>Директор</h2><p>Муратов Сергей Алексеевич, действует на основании устава</p><a class="btn btn-sm btn-tone" href="contacts.html">Все контакты</a></div></aside>
+  <article class="doc rv">{req}</article>
+</div>'''
+    write('company', page('company', 'О компании', body, active='company', foot_photo=('core-drill-rig-1968.jpg', 'Колонковое бурение, 1968 год')))
 
 
 def build_contacts():
-    body = page_hero('Томск · ул. Красноармейская, 92/1', 'Контакты',
-                     'Ответим на вопросы по приборам, комплектации, ремонту и поставке.', crumbs((None, 'Контакты')))
-    body += f'''<section class="section">
-  <div class="wrap contact-grid">
-    <div class="contact-cards">
-      <a class="ccard reveal" href="tel:{PHONE_HREF}"><span class="mono">Телефон</span><b>{PHONE}</b><small>Тел./факс: {FAX}</small></a>
-      <a class="ccard reveal" href="mailto:{EMAIL}"><span class="mono">E-mail</span><b>{EMAIL}</b><small>Общий адрес предприятия</small></a>
-      <div class="ccard ccard-addr reveal"><span class="mono">Адрес</span><b>{ADDRESS}</b><small>{ADDRESS_NOTE}</small><a class="addr-scheme" href="img/e56ac6fcd237ee31fefe92e1e12cca1c.png" target="_blank" rel="noopener"><img src="img/e56ac6fcd237ee31fefe92e1e12cca1c.png" alt="Схема проезда к офису" loading="lazy"><span class="mono">Схема проезда ↗</span></a></div>
-      <div class="people reveal">
-        <div class="person"><span class="mono">Директор</span><b>Муратов Сергей Алексеевич</b><a href="mailto:MuratovSA@asu-expert.ru">MuratovSA@asu-expert.ru</a></div>
-        <div class="person"><span class="mono">Зам. директора по геофизической аппаратуре</span><b>Журиков Сергей Александрович</b><a href="mailto:GurikovSA@asu-expert.ru">GurikovSA@asu-expert.ru</a></div>
-      </div>
+    body = page_hero('Контакты', 'Ответим на вопросы по приборам, комплектации, ремонту и поставке.',
+                     crumbs((None, 'Контакты')),
+                     (photo('tomsk-krasnoarmeyskaya-92.jpg'), 'Деревянный дом на улице Красноармейской, 92 в Томске', 'Томск, улица Красноармейская, 92', ''))
+    body += f'''
+<section class="section contact-grid">
+  <div class="contact-cards">
+    <a class="ccard rv" href="tel:{PHONE_HREF}"><h2>Телефон</h2><b>{PHONE}</b><small>Тел./факс: {FAX}</small></a>
+    <a class="ccard rv" style="--d:1" href="mailto:{EMAIL}"><h2>Почта</h2><b>{EMAIL}</b><small>Общий адрес предприятия</small></a>
+    <div class="ccard rv" style="--d:2"><h2>Адрес</h2><p>{ADDRESS}</p><small>{ADDRESS_NOTE}</small>
+      <a class="scheme" href="img/e56ac6fcd237ee31fefe92e1e12cca1c.png" target="_blank" rel="noopener"><img src="img/e56ac6fcd237ee31fefe92e1e12cca1c.png" alt="Схема проезда к офису на Красноармейской, 92/1" loading="lazy"></a></div>
+    <div class="people rv" style="--d:3">
+      <div class="person"><span>Директор</span><b>Муратов Сергей Алексеевич</b><a href="mailto:MuratovSA@asu-expert.ru">MuratovSA@asu-expert.ru</a></div>
+      <div class="person"><span>Зам. директора по геофизической аппаратуре</span><b>Журиков Сергей Александрович</b><a href="mailto:GurikovSA@asu-expert.ru">GurikovSA@asu-expert.ru</a></div>
     </div>
-    <div class="map reveal"><iframe src="https://yandex.ru/map-widget/v1/-/CCUuY2HrhA" title="АСУ-ЭКСПЕРТ на Яндекс Картах" loading="lazy" allowfullscreen></iframe></div>
   </div>
+  <div class="map rv" style="--d:1"><iframe src="https://yandex.ru/map-widget/v1/-/CCUuY2HrhA" title="АСУ-ЭКСПЕРТ на Яндекс Картах" loading="lazy" allowfullscreen></iframe></div>
 </section>
 <section class="section" id="request">
-  <div class="wrap">
-    <form class="rform reveal" id="rform" novalidate>
-      <div class="rform-head"><p class="eyebrow mono">запрос коммерческого предложения</p><h2 class="sec-title">Опишите задачу</h2>
-      <p>Форма откроет ваш почтовый клиент с готовым письмом на {EMAIL}.</p></div>
-      <label><span>Имя и организация</span><input name="name" required autocomplete="organization"></label>
-      <label><span>Телефон или e-mail</span><input name="contact" required autocomplete="email"></label>
-      <label class="full"><span>Прибор</span><select name="product"><option value="">Пока не знаю — нужна консультация</option>{''.join(f'<option>{e(p["name"])} — {e(p["kind"])}</option>' for p in PRODUCTS.values())}</select></label>
-      <label class="full"><span>Задача: тип скважин, глубина, кабель, регистратор</span><textarea name="msg" rows="5"></textarea></label>
-      <button class="btn btn-red" type="submit">Сформировать письмо</button>
-    </form>
-  </div>
-</section>'''
-    write('contacts', page('contacts', 'Контакты', body, active='contacts'))
+  <form class="rform" id="rform" novalidate>
+    <div class="rform-head"><h2 class="sec-title rv">Опишите задачу</h2>
+    <p>Форма откроет вашу почтовую программу с готовым письмом на {EMAIL}.</p></div>
+    <label><span>Имя и организация</span><input name="name" required autocomplete="organization"></label>
+    <label><span>Телефон или почта</span><input name="contact" required autocomplete="email"></label>
+    <label class="full"><span>Прибор</span><select name="product"><option value="">Пока не знаю, нужна консультация</option>{''.join(f'<option>{e(p["name"])} — {e(p["kind"])}</option>' for p in PRODUCTS.values())}</select></label>
+    <label class="full"><span>Задача: тип скважин, глубина, кабель, регистратор</span><textarea name="msg" rows="5"></textarea></label>
+    <button class="btn btn-red" type="submit">Сформировать письмо</button>
+  </form>
+</section>''' + band(BAND_FIELD)
+    write('contacts', page('contacts', 'Контакты', body, active='contacts', foot_photo=('tomsk-view.jpg', 'Томск')))
 
 
 def build_clients():
-    items = ''.join(f'<li class="client reveal" style="--i:{i % 6}"><span class="mono">{i + 1:02d}</span><b>{e(n)}</b><small>{e(c)}</small></li>'
-                    for i, (n, c) in enumerate(CLIENTS))
-    body = page_hero('С 2009 года', 'Заказчики',
-                     'Горнодобывающие и нефтесервисные компании, геологоразведка, атомная отрасль и водоканалы.',
-                     crumbs((None, 'Заказчики')))
-    body += f'''<section class="section"><div class="wrap">
-  <div class="geo reveal"><figure class="geo-map"><img src="img/ea7df1cb27ff50326722117e778418a5.png" alt="География заказчиков на карте" loading="lazy"></figure>
-  <div class="geo-text"><p class="eyebrow mono">география поставок</p><h2 class="sec-title">Россия, Казахстан, Узбекистан, Беларусь</h2>
-  <p class="lead">Приборы работают на угольных разрезах Кузбасса, урановых месторождениях Забайкалья, в нефтесервисе Западной Сибири и на объектах атомной отрасли.</p></div></div>
-  <ol class="clients">{items}</ol></div></section>'''
+    items = ''.join(f'<li><b>{e(n)}</b><small>{e(c)}</small></li>' for n, c in CLIENTS)
+    body = page_hero('Заказчики', 'Горнодобывающие и нефтесервисные компании, геологоразведка, атомная отрасль и водоканалы.',
+                     crumbs((None, 'Заказчики')),
+                     (photo('taiga-torch.jpg'), 'Факел попутного газа в тайге Западной Сибири', 'Западная Сибирь, начало 1980-х', ''))
+    body += f'''
+<section class="section split-2 geo">
+  <div><h2 class="sec-title rv">География поставок</h2>
+  <p class="lead rv" style="--d:1">Приборы работают на угольных разрезах Кузбасса, урановых месторождениях Забайкалья, в нефтесервисе Западной Сибири и на объектах атомной отрасли.</p></div>
+  <figure class="figure rv" style="--d:1"><img src="img/ea7df1cb27ff50326722117e778418a5.png" alt="Карта: заказчики в России, Казахстане, Узбекистане и Беларуси" loading="lazy"></figure>
+</section>
+<section class="section">
+  <div class="sec-head"><h2 class="sec-title rv">Список заказчиков</h2></div>
+  <ul class="clients-names rv">{items}</ul>
+</section>''' + band(BAND_FIELD)
     write('clients', page('clients', 'Заказчики', body, active='clients'))
 
 
@@ -562,17 +565,19 @@ def build_news():
         f'<button class="ychip" data-y="{y}">{y}</button>' for y in years)
     groups = ''
     for y in years:
-        rows = ''.join(f'<li class="nrow"><time class="mono" datetime="{n["iso"]}">{e(n["date"])}</time><p>{e(n["text"])}</p></li>'
+        rows = ''.join(f'<li class="nrow"><time datetime="{n["iso"]}">{e(n["date"])}</time><p>{e(n["text"])}</p></li>'
                        for n in NEWS if n['year'] == y)
-        groups += f'<section class="ngroup" data-y="{y}"><h2 class="ngroup-y">{y}</h2><ol>{rows}</ol></section>'
-    body = page_hero('Отгрузки · тендеры · ремонт', 'Новости',
+        groups += f'<section class="ngroup" data-y="{y}"><h2 class="ngroup-y rv">{y}</h2><ol class="rv" style="--d:1">{rows}</ol></section>'
+    body = page_hero('Новости',
                      f'{len(NEWS)} {plural(len(NEWS), "запись", "записи", "записей")} с 2010 года: поставки приборов, выигранные тендеры, ремонт и новые разработки.',
-                     crumbs((None, 'Новости')))
-    body += f'''<section class="section"><div class="wrap">
-  <div class="nfilter"><input type="search" id="nsearch" placeholder="Поиск по новостям: прибор, заказчик…" aria-label="Поиск по новостям"><div class="ychips">{chips}</div></div>
+                     crumbs((None, 'Новости')),
+                     (photo('core-drill-rig-1968.jpg'), 'Геологи у колонковой буровой установки', 'Колонковое бурение, 1968 год', ''))
+    body += f'''
+<section class="section">
+  <div class="nfilter"><input type="search" id="nsearch" placeholder="Прибор или заказчик" aria-label="Поиск по новостям"><div class="ychips" role="group" aria-label="Год">{chips}</div></div>
   <p class="nempty" id="nempty" hidden>Ничего не найдено</p>
   <div class="ngroups">{groups}</div>
-</div></section>'''
+</section>''' + band(BAND_FIELD)
     write('news', page('news', 'Новости', body, active='news'))
 
 
@@ -580,249 +585,162 @@ def build_certificates():
     imgs = re.findall(r'src="img/([^"]+)"', CONTENT[59]['html'])
     certs, reviews = imgs[:5], imgs[5:]
 
-    def gal(lst):
-        return ''.join(f'<a class="cert reveal" href="img/{i}" data-lightbox style="--i:{k % 5}"><img src="img/{i}" alt="Документ" loading="lazy"></a>'
+    def gal(lst, kind):
+        return ''.join(f'<a class="cert rv" href="img/{i}" data-lightbox style="--d:{k % 5}"><img src="img/{i}" alt="{kind}, страница {k + 1}" loading="lazy"></a>'
                        for k, i in enumerate(lst))
-    body = page_hero('Документы', 'Сертификаты и отзывы',
-                     'Декларации о соответствии ТР ТС / ЕАЭС и благодарственные письма заказчиков. Нажмите на документ, чтобы открыть его крупно.',
-                     crumbs((None, 'Сертификаты')))
-    body += f'''<section class="section"><div class="wrap">
-  <div class="sec-head"><p class="eyebrow mono">декларации и сертификаты</p><h2 class="sec-title">Сертификаты</h2></div>
-  <div class="certs">{gal(certs)}</div>
-  <div class="sec-head" style="margin-top:clamp(56px,8vw,96px)"><p class="eyebrow mono">отзывы</p><h2 class="sec-title">Отзывы заказчиков</h2></div>
-  <div class="certs">{gal(reviews)}</div>
-</div></section>
+    body = page_hero('Сертификаты и отзывы',
+                     'Декларации о соответствии ТР ТС / ЕАЭС и письма заказчиков. Нажмите на документ, чтобы открыть его крупно.',
+                     crumbs((None, 'Сертификаты')),
+                     ('img/' + certs[0], 'Декларация о соответствии', '', 'object'))
+    body += f'''
+<section class="section">
+  <div class="sec-head"><h2 class="sec-title rv">Сертификаты</h2></div>
+  <div class="certs">{gal(certs, 'Сертификат')}</div>
+</section>
+<section class="section">
+  <div class="sec-head"><h2 class="sec-title rv">Отзывы заказчиков</h2></div>
+  <div class="certs">{gal(reviews, 'Отзыв заказчика')}</div>
+</section>
+''' + band(BAND_WELL) + '''
 <div class="lightbox" id="lightbox" hidden><button aria-label="Закрыть">×</button><img alt=""></div>'''
-    write('certificates', page('certificates', 'Сертификаты и отзывы', body, active='certificates'))
+    write('certificates', page('certificates', 'Сертификаты и отзывы', body))
 
 
 def build_index():
-    latest = NEWS[:6]
-    ticker = ''.join(f'<span><time class="mono">{e(n["date"])}</time>{e(n["text"])}</span>' for n in NEWS[:12])
-    cats = ''.join(f'''<a class="dir reveal" href="{c['slug']}.html" style="--i:{i}">
-  <span class="dir-num mono">{c['num']}</span>
-  <div class="dir-img"><img src="img/{c['img']}" alt="" loading="lazy"></div>
-  <h3>{e(c['title'])}</h3>
-  <p>{e(c['lead'])}</p>
-  <span class="dir-count mono">{len(c['products'])} {plural(len(c['products']), 'модель', 'модели', 'моделей')} →</span>
-</a>''' for i, c in enumerate(CATEGORIES))
-    frames = ''.join(f'<figure class="frame"><img src="img/{f}" alt="Кадр видеокаротажа" loading="lazy"><figcaption class="mono">REC ● {i + 1:02d}</figcaption></figure>'
-                     for i, f in enumerate(WELL_FRAMES))
-    videos = ''.join(f'<a class="vid" href="{u}" target="_blank" rel="noopener"><span class="vid-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><b>{e(t)}</b><small class="mono">{e(s)}</small></a>'
-                     for u, t, s in VIDEOS)
-    news = ''.join(f'<li class="nitem reveal" style="--i:{i}"><time class="mono">{e(n["date"])}</time><p>{e(n["text"])}</p></li>'
-                   for i, n in enumerate(latest))
-    clients = ''.join(f'<span>{e(n)}</span>' for n, _ in CLIENTS)
+    n_cat = lambda c: f"{len(c['products'])} {plural(len(c['products']), 'модель', 'модели', 'моделей')}"
+    dirs = ''.join(f'''<li class="rv" style="--d:{i}"><a href="{c['slug']}.html"><b>{e(c['title'])}</b><span>{n_cat(c)}</span><small>{e(c['lead'])}</small></a></li>'''
+                   for i, c in enumerate(CATEGORIES))
     electric = ['kp-51e', 'kp-71egtr', 'kp-82bkr', 'kp-81eg']
+    inline = ''.join(f'<a href="{s}.html"><img src="img/{PRODUCTS[s]["img"]}" alt="" loading="lazy"><span><b>{e(PRODUCTS[s]["name"])}</b>{e(PRODUCTS[s]["kind"])}</span></a>'
+                     for s in electric)
+    video_models = ''.join(f'<a href="{s}.html"><img src="img/{PRODUCTS[s]["img"]}" alt="" loading="lazy"><span><b>{e(PRODUCTS[s]["name"])}</b>{e(PRODUCTS[s]["kind"])}</span></a>'
+                           for s in ['kp-410vk', 'kp-511vk', 'kp-512vk'])
+    methods = ''.join(f'<button type="button" data-m="{k}" aria-pressed="false">{e(t)}</button>' for k, t in METHODS)
+    plist = ''.join(f'''<li data-m="{PRODUCT_METHODS[s]}"><a href="{s}.html"><img src="img/{p['img']}" alt="" loading="lazy"><span><b>{e(p['name'])}</b>{e(p['kind'])}</span></a></li>'''
+                    for s, p in PRODUCTS.items())
+    f = WELL_FRAMES
+    frames = (
+        f'<figure class="m-tall"><img src="img/{f[0]}" alt="Перфорированная колонна, вид камерой вниз по стволу" loading="lazy"></figure>'
+        f'<figure class="m-pair"><div><img src="img/{f[1]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></div><div><img src="img/{f[2]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></div></figure>'
+        f'<figure class="m-wide"><img src="img/{f[5]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></figure>'
+        f'<figure class="m-pair"><div><img src="img/{f[3]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></div><div><img src="img/{f[4]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></div></figure>'
+        f'<figure class="m-tall"><img src="img/{f[6]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></figure>'
+        f'<figure class="m-wide"><img src="img/{f[8]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></figure>'
+        f'<figure class="m-pair"><div><img src="img/{f[9]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></div><div><img src="img/{f[10]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></div></figure>'
+        f'<figure class="m-tall"><img src="img/{f[11]}" alt="Кадр видеокаротажа, ствол скважины" loading="lazy"></figure>'
+    )
+    videos = ''.join(f'<a href="{u}" target="_blank" rel="noopener"><b>{e(t)}</b><span>{e(s)}, видео на YouTube</span></a>' for u, t, s in VIDEOS)
+    news = ''.join(f'<li class="rv" style="--d:{i}"><time datetime="{n["iso"]}">{e(n["date"])}</time><p>{e(n["text"])}</p></li>' for i, n in enumerate(NEWS[:6]))
+    names = ''.join(f'<li><b>{e(n)}</b><small>{e(c)}</small></li>' for n, c in CLIENTS)
+    cable = '<i></i>' * 40
 
-    body = f'''<section class="hero" id="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-in">
-      <p class="eyebrow mono">Научно-производственное предприятие · Томск · с 2009 года</p>
-      <h1 class="hero-title">Геофизические приборы для исследования скважин</h1>
-      <p class="hero-lead">Скважинные приборы электрического, гамма- и видеокаротажа, каротажные лаборатории и регистраторы. Работаем с нефтяными, газовыми, рудными и водяными скважинами.</p>
-      <div class="hero-actions">
-        <a class="btn btn-red" href="catalog.html">Каталог приборов</a>
-        <a class="btn btn-ghost" href="contacts.html#request">Подобрать оборудование</a>
-      </div>
-      <dl class="hero-facts">
-        <div><dt class="mono">Кабель</dt><dd>одно- и трёхжильный</dd></div>
-        <div><dt class="mono">Телеметрия</dt><dd>цифровая, «Манчестер-2»</dd></div>
-        <div><dt class="mono">Документы</dt><dd>декларации ТР ТС / ЕАЭС</dd></div>
-      </dl>
-    </div>
-    <figure class="hero-log" aria-label="Пример каротажной диаграммы: литология, ГК, КС и ПС по глубине">
-      {well_log_svg()}
-      <figcaption class="mono">Пример диаграммы: литология, ГК, КС, ПС</figcaption>
-    </figure>
-  </div>
-</section>
-
-<div class="ticker" aria-label="Последние отгрузки"><div class="ticker-track">{ticker}{ticker}</div></div>
-
-<section class="section" id="directions">
-  <div class="wrap">
-    <div class="sec-head"><p class="eyebrow mono">направления</p><h2 class="sec-title split">Что мы выпускаем</h2>
-    <a class="link-arrow" href="catalog.html">Весь каталог</a></div>
-    <div class="dirs">{cats}</div>
-  </div>
-</section>
-
-<section class="feature section">
-  <div class="wrap feature-grid">
-    <div class="feature-media reveal">
-      <figure class="feature-photo"><img src="img/fa5c25733eb8f5628b78791ae5e265a2.JPG" alt="Каротажная диаграмма, записанная лабораторией ГЕОФИТ" loading="lazy"></figure>
-      <figure class="feature-log"><img src="img/ba03a947ccb50c6f471ee1153a7d5dd1.JPG" alt="Каротажная лаборатория ГЕОФИТ 1003" loading="lazy"><figcaption class="mono">ГЕОФИТ 1003</figcaption></figure>
-    </div>
-    <div class="feature-text">
-      <p class="eyebrow mono">регистрирующая аппаратура</p>
-      <h2 class="sec-title split">Каротажная лаборатория ГЕОФИТ</h2>
-      <p class="lead">Комплексные геофизические исследования нефтяных, рудных и газовых скважин — запись, калибровка и обработка в одном комплексе.</p>
-      <ol class="steps">
-        <li class="reveal"><b>Настройка</b>таблицы параметров скважинных приборов, макеты по видам исследований и оформление рабочего экрана</li>
-        <li class="reveal"><b>Запись</b>калибровки, данные ГИС, акустического каротажа и технологических параметров в реальном времени по глубине или времени</li>
-        <li class="reveal"><b>Расчёт</b>геофизические параметры по линейным и нелинейным характеристикам</li>
-        <li class="reveal"><b>Контроль</b>оперативная оценка качества каротажа, правка без изменения исходного файла данных</li>
-      </ol>
-      <div class="feature-actions"><a class="btn btn-ghost" href="geofit-1003.html">ГЕОФИТ 1003</a><a class="btn btn-ghost" href="geofit-1108.html">ГЕОФИТ 1108</a><a class="btn btn-ghost" href="depth-system.html">Система глубины</a></div>
-    </div>
-  </div>
-</section>
-
-<section class="section electric">
-  <div class="wrap">
-    <div class="sec-head"><p class="eyebrow mono">электрический и гамма-каротаж</p><h2 class="sec-title split">Все измерения за один спуско-подъём</h2></div>
-    <div class="adv">
-      <div class="adv-item reveal"><span class="mono">01</span><b>Одновременно</b><p>Измерение и передача на поверхность параметров всеми зондами во всём диапазоне.</p></div>
-      <div class="adv-item reveal"><span class="mono">02</span><b>Одножильный кабель</b><p>Цифровая передача данных через одножильный каротажный кабель, код «Манчестер-2».</p></div>
-      <div class="adv-item reveal"><span class="mono">03</span><b>Без калибровки</b><p>Не нужна калибровка и настройка перед записью, нет наземной панели.</p></div>
-      <div class="adv-item reveal"><span class="mono">04</span><b>Совместимость</b><p>Сопряжение со всеми выпускаемыми каротажными регистраторами.</p></div>
-    </div>
-    <div class="pgrid pgrid-4">{''.join(product_card(s, i) for i, s in enumerate(electric))}</div>
-  </div>
-</section>
-
-<section class="video-sec" id="video">
-  <div class="video-pin">
-    <div class="wrap video-head">
-      <div>
-        <p class="eyebrow mono">видеокаротаж</p>
-        <h2 class="sec-title split">Видеозапись состояния колонн и фильтров</h2>
-      </div>
-      <ul class="defects">
-        <li>смятие труб, трещины в колонне</li><li>отсутствие сальника между колоннами</li><li>деформация надфильтровой трубы</li>
-        <li>песчаная пробка и зернистость</li><li>заусенцы внутри труб</li><li>недоворот муфтовых соединений</li><li>качество сварных швов</li>
-      </ul>
-    </div>
-    <div class="frames-rail"><div class="frames" id="frames">{frames}</div></div>
-  </div>
-  <div class="wrap videos">{videos}<a class="vid vid-more" href="video.html"><b>Приборы видеокаротажа</b><small class="mono">КП-410ВК2 · КП-511ВК · КП-512ВК →</small></a></div>
-</section>
-
-<section class="section cement">
-  <div class="wrap split-2">
-    <div class="reveal">
-      <p class="eyebrow mono">цементирование</p>
-      <h2 class="sec-title">Станция контроля цементирования нефтяных скважин</h2>
-      <p class="lead">Датчики расхода, давления, плотности и температуры. Установка опрессована на 40 МПа по требованиям Госгортехнадзора РФ.</p>
-      <p>Программное обеспечение контролирует заливку ствола в реальном времени и позволяет оперативно вмешаться — риск аварийной ситуации сводится к минимуму. По результатам формируются отчёты в графической и табличной форме.</p>
-      <a class="btn btn-ghost" href="mailto:{EMAIL}?subject=Станция%20контроля%20цементирования">Запросить информацию</a>
-    </div>
-    <div class="gaugeset reveal" aria-hidden="true">
-      <div class="dial" data-v="0.72"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">40</b><span class="mono">МПа</span></div>
-      <div class="dial" data-v="0.48"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">ρ</b><span class="mono">плотность</span></div>
-      <div class="dial" data-v="0.6"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">Q</b><span class="mono">расход</span></div>
-      <div class="dial" data-v="0.35"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">T</b><span class="mono">температура</span></div>
-    </div>
-  </div>
-</section>
-
-{stats_html()}
-
-<section class="section clients-sec">
-  <div class="wrap"><div class="sec-head"><p class="eyebrow mono">заказчики</p><h2 class="sec-title split">Заказчики в России, Казахстане, Узбекистане и Беларуси</h2><a class="link-arrow" href="clients.html">Все заказчики</a></div></div>
-  <div class="marquee"><div class="marquee-track">{clients}{clients}</div></div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <div class="sec-head"><p class="eyebrow mono">новости</p><h2 class="sec-title split">Свежие отгрузки</h2><a class="link-arrow" href="news.html">Все новости</a></div>
-    <ol class="nlist">{news}</ol>
-  </div>
-</section>'''
-    write('index', page('index', 'Главная', body))
-
-
-
-def well_log_svg():
-    """Статичная каротажная диаграмма для первого экрана.
-
-    Кривые согласованы с литологией: в глинах ГК выше и ПС у линии глин,
-    в песчаниках ГК низкий и ПС отклоняется влево, в известняках и углях КС растёт.
-    """
-    import math
-    import random
-    rnd = random.Random(1003)
-    W, H, top = 520, 760, 64
-    cols = {'depth': (0, 58), 'lith': (58, 100), 'gk': (100, 240), 'ks': (240, 380), 'ps': (380, 520)}
-    d0, d1 = 1200, 1290
-    yd = lambda d: top + 8 + (d - d0) / (d1 - d0) * (H - top - 22)
-    layers = [(1200, 1209, 'clay'), (1209, 1221, 'sand'), (1221, 1225, 'clay'), (1225, 1232, 'lime'),
-              (1232, 1240, 'clay'), (1240, 1244, 'coal'), (1244, 1259, 'sand'), (1259, 1266, 'clay'),
-              (1266, 1273, 'lime'), (1273, 1281, 'sand'), (1281, 1290, 'clay')]
-    # значения в долях ширины трека: (ГК, КС, ПС)
-    base = {'clay': (0.72, 0.18, 0.78), 'sand': (0.25, 0.42, 0.28), 'lime': (0.18, 0.78, 0.66), 'coal': (0.08, 0.92, 0.7)}
-
-    def lith_at(d):
-        for a, b, t in layers:
-            if a <= d < b:
-                return t
-        return 'clay'
-
-    def smooth_val(d, k):
-        # сглаживаем переходы на границах пластов, чтобы кривая выглядела как запись прибора
-        acc, wsum = 0.0, 0.0
-        for dd in (-1.2, -0.6, 0, 0.6, 1.2):
-            w = 1.6 - abs(dd)
-            acc += base[lith_at(d + dd)][k] * w
-            wsum += w
-        return acc / wsum
-
-    noise = {k: [rnd.uniform(-1, 1) for _ in range(400)] for k in range(3)}
-
-    def path(k, col, amp):
-        x0, x1 = cols[col]
-        pts = []
-        steps = 360
-        for i in range(steps + 1):
-            d = d0 + (d1 - d0) * i / steps
-            n = noise[k][i % 400] * amp + math.sin(d * 1.7 + k) * amp * 0.6
-            v = min(0.96, max(0.04, smooth_val(d, k) + n))
-            pts.append(f'{x0 + 8 + v * (x1 - x0 - 16):.1f},{yd(d):.1f}')
-        return 'M' + ' L'.join(pts)
-
-    grid = []
-    for d in range(d0, d1 + 1):
-        y = yd(d)
-        major = d % 10 == 0
-        if d % 2 == 0 or major:
-            grid.append(f'<line x1="{cols["lith"][1]}" x2="{W}" y1="{y:.1f}" y2="{y:.1f}" class="{"g-major" if major else "g-minor"}"/>')
-        if major:
-            grid.append(f'<text x="50" y="{y + 4:.1f}" class="lg-depth">{d}</text>')
-            grid.append(f'<line x1="52" x2="58" y1="{y:.1f}" y2="{y:.1f}" class="g-major"/>')
-    for col in ('gk', 'ks', 'ps'):
-        x0, x1 = cols[col]
-        for j in range(1, 4):
-            x = x0 + (x1 - x0) * j / 4
-            grid.append(f'<line x1="{x:.1f}" x2="{x:.1f}" y1="{top}" y2="{H}" class="g-minor"/>')
-    for x in (58, 100, 240, 380):
-        grid.append(f'<line x1="{x}" x2="{x}" y1="0" y2="{H}" class="g-col"/>')
-    lith = ''.join(f'<rect x="{cols["lith"][0]}" y="{yd(a):.1f}" width="{cols["lith"][1] - cols["lith"][0]}" height="{yd(b) - yd(a):.1f}" fill="url(#p-{t})"/>'
-                   for a, b, t in layers)
-    heads = [
-        ('depth', 'Глуб.', 'м', ''), ('lith', 'Лит.', '', ''),
-        ('gk', 'ГК', 'мкР/ч', '0 — 30'), ('ks', 'КС', 'Ом·м', '1 — 1000'), ('ps', 'ПС', 'мВ', '−80 — 20'),
+    stage = [
+        (photo('drilling-rig.jpg'), 'Буровая установка', 'Буровая установка', ''),
+        (photo('drill-core-boxes.jpg'), 'Керн в ящиках', 'Керн в ящиках после бурения', ''),
+        (photo('well-log-usgs-1981.jpg'), 'Каротажная диаграмма', 'Каротажная диаграмма скважины, 1981 год', 'paper'),
+        (photo('core-drill-rig-1968.jpg'), 'Геологи у буровой установки', 'Колонковое бурение, 1968 год', ''),
+        ('VIDEO', 'Съёмка камерой в скважине', 'Камера в скважине, рудник в ЮАР, 2015 год', ''),
+        (photo('taiga-torch.jpg'), 'Факел попутного газа в тайге', 'Западная Сибирь, начало 1980-х', ''),
     ]
-    head = ''.join(f'<text x="{(cols[c][0] + cols[c][1]) / 2}" y="22" class="lg-name lg-{c}">{n}</text>'
-                   f'<text x="{(cols[c][0] + cols[c][1]) / 2}" y="38" class="lg-unit">{u}</text>'
-                   f'<text x="{(cols[c][0] + cols[c][1]) / 2}" y="54" class="lg-unit">{r}</text>'
-                   for c, n, u, r in heads)
-    return f'''<svg class="wlog" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMin meet" role="img">
-<defs>
-<pattern id="p-sand" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" class="lt-sand"/><circle cx="2" cy="2" r=".9" class="lt-dot"/><circle cx="6" cy="6" r=".9" class="lt-dot"/></pattern>
-<pattern id="p-clay" width="12" height="6" patternUnits="userSpaceOnUse"><rect width="12" height="6" class="lt-clay"/><line x1="1" x2="9" y1="3" y2="3" class="lt-line"/></pattern>
-<pattern id="p-lime" width="16" height="8" patternUnits="userSpaceOnUse"><rect width="16" height="8" class="lt-lime"/><path d="M0 .5H16M0 4.5H16M4 .5V4.5M12 4.5V8" class="lt-line"/></pattern>
-<pattern id="p-coal" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" class="lt-coal"/></pattern>
-</defs>
-<rect x="0" y="0" width="{W}" height="{top}" class="lg-headbg"/>
-{head}
-<line x1="0" x2="{W}" y1="{top}" y2="{top}" class="g-col"/>
-{lith}
-{''.join(grid)}
-<path d="{path(2, 'ps', 0.018)}" class="cv cv-ps" pathLength="1"/>
-<path d="{path(1, 'ks', 0.03)}" class="cv cv-ks" pathLength="1"/>
-<path d="{path(0, 'gk', 0.035)}" class="cv cv-gk" pathLength="1"/>
-</svg>'''
+    def stage_media(i, s, a):
+        if s == 'VIDEO':
+            return (f'<video muted loop playsinline preload="none" poster="{photo("borehole-camera.jpg")}" aria-label="{e(a)}">'
+                    f'<source src="{photo("borehole-camera.webm")}" type="video/webm"></video>')
+        return f'<img src="{s}" alt="{e(a)}"{"" if i == 0 else " loading=\"lazy\""}>'
+    stage_html = ''.join(f'<figure class="{k}{" is-on" if i == 0 else ""}" data-stage="{i}">{stage_media(i, s, a)}<figcaption>{e(c)}</figcaption></figure>'
+                         for i, (s, a, c, k) in enumerate(stage))
+
+    body = f'''<div class="stage-page">
+  <div class="reading">
+    <section class="r-sec hero-card" data-stage="0">
+      <div class="cable" aria-hidden="true">{cable}</div>
+      <h1 class="hero-title rv">Приборы для каротажа скважин</h1>
+      <p class="hero-lead rv" style="--d:1">Томское предприятие АСУ-ЭКСПЕРТ с 2009 года выпускает скважинные приборы электрического, гамма- и видеокаротажа, каротажные лаборатории и регистраторы.</p>
+      <div class="hero-actions rv" style="--d:2">
+        <a class="btn btn-red" href="#picker">Подобрать прибор</a>
+        <a class="link" href="catalog.html">Весь каталог</a>
+      </div>
+      <nav class="hero-links rv" style="--d:3" aria-label="Быстрые ссылки"><a href="geofit-1003.html">Лаборатория ГЕОФИТ</a><a href="video.html">Видеокаротаж</a><a href="news.html">Отгрузки</a><a href="contacts.html">Контакты</a></nav>
+    </section>
+
+    <section class="r-sec" data-stage="1" aria-labelledby="h-dirs">
+      <h2 class="sec-title rv" id="h-dirs">Что мы выпускаем</h2>
+      <ul class="dirlist">{dirs}</ul>
+    </section>
+
+    <section class="r-sec" data-stage="2" aria-labelledby="h-geofit">
+      <h2 class="sec-title rv" id="h-geofit">Лаборатория ГЕОФИТ</h2>
+      <p class="lead rv" style="--d:1">Комплексные исследования нефтяных, рудных и газовых скважин: запись, калибровка и обработка в одном комплексе.</p>
+      <ul class="facts rv" style="--d:2">
+        <li><b>Настройка</b>таблицы параметров скважинных приборов, макеты по видам исследований, оформление рабочего экрана</li>
+        <li><b>Запись</b>калибровки, данные ГИС, акустического каротажа и технологических параметров в реальном времени по глубине или времени</li>
+        <li><b>Расчёт</b>геофизические параметры по линейным и нелинейным характеристикам</li>
+        <li><b>Контроль</b>оперативная оценка качества каротажа, правка без изменения исходного файла данных</li>
+      </ul>
+      <div class="r-actions rv" style="--d:3"><a class="btn btn-ink" href="geofit-1003.html">ГЕОФИТ 1003</a><a class="btn btn-tone" href="geofit-1108.html">ГЕОФИТ 1108</a><a class="btn btn-tone" href="depth-system.html">Система глубины</a></div>
+    </section>
+
+    <section class="r-sec" data-stage="3" aria-labelledby="h-el">
+      <h2 class="sec-title rv" id="h-el">Все измерения за один спуск</h2>
+      <p class="lead rv" style="--d:1">Приборы электрического и гамма-каротажа измеряют и передают на поверхность параметры всеми зондами во всём диапазоне за один спуско-подъём.</p>
+      <p class="rv" style="--d:2">Передача цифровая, по одножильному каротажному кабелю, код «Манчестер-2». Калибровка и настройка перед записью не нужны, наземной панели нет. Приборы сопрягаются со всеми выпускаемыми каротажными регистраторами.</p>
+      <div class="inline-models rv" style="--d:3">{inline}</div>
+    </section>
+
+    <section class="r-sec" data-stage="4" aria-labelledby="h-video">
+      <h2 class="sec-title rv" id="h-video">Видеокаротаж</h2>
+      <p class="lead rv" style="--d:1">Прибор опускается на одножильном кабеле до 4000 м и снимает колонну, фильтры и забой. На записи видно:</p>
+      <ul class="defects rv" style="--d:2">
+        <li>смятие труб и трещины</li><li>отсутствие сальника</li><li>деформацию надфильтровой трубы</li>
+        <li>песчаную пробку</li><li>заусенцы внутри труб</li><li>недоворот муфт</li><li>качество сварных швов</li>
+      </ul>
+      <div class="inline-models rv" style="--d:3">{video_models}</div>
+    </section>
+
+    <section class="r-sec" data-stage="5" aria-labelledby="h-cement">
+      <h2 class="sec-title rv" id="h-cement">Контроль цементирования</h2>
+      <p class="lead rv" style="--d:1">Станция для нефтяных скважин с датчиками расхода, давления, плотности и температуры. Установка опрессована на 40 МПа по требованиям Госгортехнадзора РФ.</p>
+      <p class="rv" style="--d:2">Программа показывает заливку ствола в реальном времени, чтобы оператор мог вмешаться до аварии. По результатам формируются отчёты в графической и табличной форме.</p>
+      <p class="rv" style="--d:3"><a class="link" href="mailto:{EMAIL}?subject=Станция%20контроля%20цементирования">Запросить описание станции</a></p>
+    </section>
+  </div>
+  <div class="stage" aria-hidden="false">{stage_html}</div>
+</div>
+
+<section class="picker" id="picker" aria-labelledby="h-picker">
+  <div class="picker-in">
+    <div class="picker-side">
+      <h2 id="h-picker" class="rv">Подбор прибора</h2>
+      <p class="picker-lead rv" style="--d:1">Отметьте методы, которые нужны на скважине. Останутся приборы, которые выполняют все отмеченные.</p>
+      <div class="methods rv" style="--d:2" role="group" aria-label="Методы исследования">{methods}</div>
+      <p class="picker-count" id="pickerCount" aria-live="polite">Все приборы каталога: {len(PRODUCTS)}</p>
+    </div>
+    <ul class="picker-list" id="pickerList">{plist}</ul>
+  </div>
+</section>
+
+<section class="frames-sec" aria-labelledby="h-frames">
+  <div class="frames-head"><h2 class="sec-title rv" id="h-frames">Кадры из скважин</h2><p class="rv" style="--d:1">Сняты нашими приборами видеокаротажа на объектах заказчиков. Лента прокручивается вбок.</p></div>
+  <div class="frames-row" tabindex="0" aria-label="Кадры видеокаротажа">{frames}</div>
+  <div class="videos">{videos}<a class="more" href="video.html"><b>Приборы видеокаротажа</b><span>КП-410ВК2, КП-511ВК, КП-512ВК</span></a></div>
+</section>
+
+<section class="proof" aria-labelledby="h-proof">
+  <div><h2 id="h-proof" class="rv">Заказчики</h2><a class="link" href="clients.html">География поставок</a></div>
+  <ul class="names rv" style="--d:1">{names}</ul>
+</section>
+
+<section class="nsec" aria-labelledby="h-news">
+  <div class="nsec-head"><h2 id="h-news" class="rv">Отгрузки</h2><a class="link" href="news.html">Все {len(NEWS)} {plural(len(NEWS), "запись", "записи", "записей")}</a></div>
+  <ol class="nrows">{news}</ol>
+</section>
+
+<section class="contact" aria-labelledby="h-contact">
+  <div><h2 id="h-contact" class="rv">Напишите инженеру</h2><p class="rv" style="--d:1">Опишите скважину, глубину, кабель и регистратор. Подберём прибор и пришлём предложение.</p></div>
+  <a class="contact-mail rv" style="--d:2" href="mailto:{EMAIL}?subject=Подбор%20прибора">{EMAIL}</a>
+  <div class="contact-foot"><span><a href="tel:{PHONE_HREF}">{PHONE}</a>, тел./факс {FAX}</span><span>{ADDRESS}</span></div>
+</section>'''
+    write('index', page('index', 'Главная', body, foot_photo=('drill-core-boxes.jpg', 'Керн в ящиках после бурения')))
 
 
 def write(slug, text):
@@ -834,7 +752,7 @@ def main():
     if os.path.isdir(OUT):
         shutil.rmtree(OUT)
     os.makedirs(OUT)
-    for sub in ('css', 'js'):
+    for sub in ('css', 'js', 'photos'):
         shutil.copytree(os.path.join(HERE, 'static', sub), os.path.join(OUT, sub))
     shutil.copy(os.path.join(HERE, 'static', 'favicon.svg'), OUT)
     # копируем только реально используемые изображения
