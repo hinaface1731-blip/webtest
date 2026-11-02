@@ -127,19 +127,6 @@
   }), { threshold: 0.5 });
   $$('.dial').forEach((d) => dialIO.observe(d));
 
-  /* ---------- телеметрия в hero */
-  const tm = $$('[data-tm]');
-  if (tm.length && !reduce) {
-    const base = { gk: 12.4, ks: 238, ps: -41, t: 18.6 };
-    setInterval(() => tm.forEach((el) => {
-      const k = el.dataset.tm; const b = base[k];
-      base[k] = b + (Math.random() - 0.5) * (k === 'ks' ? 18 : k === 'ps' ? 3 : 0.6);
-      if (k === 't') base[k] = Math.max(8, Math.min(40, base[k] + 0.05));
-      const v = base[k];
-      el.textContent = k === 'ks' ? Math.round(Math.abs(v)) : k === 'ps' ? `${v < 0 ? '−' : '+'}${Math.abs(v).toFixed(0)}` : k === 't' ? `+${v.toFixed(1)}` : Math.abs(v).toFixed(1);
-    }), 900);
-  }
-
   /* ---------- каротажные кривые на фоне заголовков внутренних страниц */
   $$('.phero-log').forEach((cv) => {
     const ctx = cv.getContext('2d');
