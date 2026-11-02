@@ -21,7 +21,7 @@
 ## Как пересобрать
 
 ```bash
-python3 src/crawl.py      # (по желанию) заново скачать страницы с asu-expert.ru -> pages.json, news.json
+python3 src/crawl.py      # (по желанию) заново скачать страницы с asu-expert.ru -> src/data/pages.json
 python3 src/extract.py    # очистить HTML старого сайта (Word-разметку) -> src/data/content.json
 python3 src/build.py      # собрать сайт в site/
 ```
