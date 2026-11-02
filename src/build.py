@@ -229,7 +229,7 @@ def page(slug, title, body, desc='', active=None, extra_head='', extra_js=''):
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <script>document.documentElement.classList.add('js')</script>
 {extra_head}
@@ -266,7 +266,7 @@ def page(slug, title, body, desc='', active=None, extra_head='', extra_js=''):
 <footer class="ftr">
   <div class="wrap">
     <div class="ftr-cta">
-      <p class="eyebrow mono">// связь с производством</p>
+      <p class="eyebrow mono">связь с производством</p>
       <h2 class="ftr-title">Подберём прибор под вашу скважину</h2>
       <div class="ftr-actions">
         <a class="btn btn-red" href="mailto:{EMAIL}?subject=Запрос%20с%20сайта">Написать инженеру</a>
@@ -393,7 +393,7 @@ def build_product(slug):
 </section>
 <section class="section">
   <div class="wrap">
-    <div class="sec-head"><p class="eyebrow mono">// в том же разделе</p><h2 class="sec-title">{e(c['title'])}</h2>
+    <div class="sec-head"><p class="eyebrow mono">в том же разделе</p><h2 class="sec-title">{e(c['title'])}</h2>
     <a class="link-arrow" href="{c['slug']}.html">Весь раздел</a></div>
     <div class="pgrid">{''.join(product_card(s, i) for i, s in enumerate(related))}</div>
   </div>
@@ -448,8 +448,8 @@ def build_catalog():
     <a class="link-arrow" href="{c['slug']}.html">Открыть раздел</a>
   </div>
 </article>'''
-    body = page_hero('// каталог продукции', 'Скважинная и наземная <em>аппаратура</em>',
-                     'Всё, что выпускает предприятие: от каротажных лабораторий до видеозондов. Приборы имеют декларации о соответствии ТР ТС / ЕАЭС.',
+    body = page_hero('Каталог', 'Скважинная и наземная аппаратура',
+                     'Каротажные лаборатории, регистраторы, система глубины и скважинные приборы. На приборы оформлены декларации о соответствии ТР ТС / ЕАЭС.',
                      crumbs((None, 'Каталог')))
     body += f'<section class="section"><div class="wrap catblocks">{blocks}</div></section>'
     write('catalog', page('catalog', 'Каталог продукции', body, active='catalog'))
@@ -457,22 +457,22 @@ def build_catalog():
 
 def build_company():
     req = CONTENT[2]['html']
-    body = page_hero('// о компании', 'Приборы, которые работают <em>на глубине</em>',
+    body = page_hero('ООО «АСУ-ЭКСПЕРТ» · Томск', 'О компании',
                      'ООО «АСУ-ЭКСПЕРТ» — научно-производственное предприятие из Томска. С 2009 года разрабатываем и выпускаем скважинные геофизические приборы и наземную регистрирующую аппаратуру.',
                      crumbs((None, 'О компании')))
     body += f'''<section class="section">
   <div class="wrap split-2">
     <div class="reveal">
-      <p class="eyebrow mono">// что мы делаем</p>
-      <h2 class="sec-title">Полный цикл: от схемы до отгрузки</h2>
-      <p class="lead">Предприятие является производителем скважинных геофизических приборов и наземной регистрирующей аппаратуры. Мы сами пишем программное обеспечение регистраторов, собираем и испытываем приборы, обучаем специалистов заказчика.</p>
+      <p class="eyebrow mono">что мы делаем</p>
+      <h2 class="sec-title">Разработка, производство, ремонт</h2>
+      <p class="lead">Регистрирующая аппаратура поставляется с программным обеспечением ГЕОФИТ. Оно позволяет:</p>
       <ul class="ticks">
         <li>мониторинг в реальном времени и архивация данных ГИС, акустического каротажа и технологических параметров;</li>
         <li>расчёт геофизических параметров по заданным формулам;</li>
         <li>калибровка каналов измерения и корректировка глубины по магнитным меткам;</li>
-        <li>оперативная оценка качества каротажа, автоматическое и ручное редактирование без изменения исходного файла;</li>
-        <li>ремонт и сервисное обслуживание поставленного оборудования.</li>
+        <li>оперативная оценка качества каротажа, автоматическое и ручное редактирование без изменения исходного файла.</li>
       </ul>
+      <p class="company-note">Ремонт и техническое обслуживание поставленных приборов выполняем сами.</p>
     </div>
     <figure class="lab-figure reveal"><img src="img/fa5c25733eb8f5628b78791ae5e265a2.JPG" alt="Каротажная диаграмма, записанная регистратором ГЕОФИТ" loading="lazy"><figcaption class="mono">Каротажная диаграмма · ПО ГЕОФИТ</figcaption></figure>
   </div>
@@ -481,7 +481,7 @@ def build_company():
 <section class="section">
   <div class="wrap split-2">
     <div class="reveal">
-      <p class="eyebrow mono">// охрана труда</p>
+      <p class="eyebrow mono">охрана труда</p>
       <h2 class="sec-title">Специальная оценка условий труда</h2>
       <p class="lead">Результаты специальной оценки условий труда (СОУТ) на рабочих местах предприятия.</p>
     </div>
@@ -504,19 +504,19 @@ def stats_html():
     <div class="stat reveal"><b class="count" data-to="{years}">0</b><span>лет разрабатываем и производим аппаратуру ГИС</span></div>
     <div class="stat reveal"><b class="count" data-to="{len(PRODUCTS)}">0</b><span>моделей приборов и регистраторов в каталоге</span></div>
     <div class="stat reveal"><b class="count" data-to="{len(NEWS)}" data-suffix="+">0</b><span>отгрузок, тендеров и событий в ленте новостей</span></div>
-    <div class="stat reveal"><b class="count" data-to="5">0</b><span>стран: Россия, Казахстан, Узбекистан, Беларусь и др.</span></div>
+    <div class="stat reveal"><b class="count" data-to="4">0</b><span>страны поставок: Россия, Казахстан, Узбекистан, Беларусь</span></div>
   </div>
 </section>'''
 
 
 def build_contacts():
-    body = page_hero('// контакты', 'Свяжитесь <em>с нами</em>',
+    body = page_hero('Томск · ул. Красноармейская, 92/1', 'Контакты',
                      'Ответим на вопросы по приборам, комплектации, ремонту и поставке.', crumbs((None, 'Контакты')))
     body += f'''<section class="section">
   <div class="wrap contact-grid">
     <div class="contact-cards">
       <a class="ccard reveal" href="tel:{PHONE_HREF}"><span class="mono">Телефон</span><b>{PHONE}</b><small>Тел./факс: {FAX}</small></a>
-      <a class="ccard reveal" href="mailto:{EMAIL}"><span class="mono">E-mail</span><b>{EMAIL}</b><small>Ответим в течение рабочего дня</small></a>
+      <a class="ccard reveal" href="mailto:{EMAIL}"><span class="mono">E-mail</span><b>{EMAIL}</b><small>Общий адрес предприятия</small></a>
       <div class="ccard ccard-addr reveal"><span class="mono">Адрес</span><b>{ADDRESS}</b><small>{ADDRESS_NOTE}</small><a class="addr-scheme" href="img/e56ac6fcd237ee31fefe92e1e12cca1c.png" target="_blank" rel="noopener"><img src="img/e56ac6fcd237ee31fefe92e1e12cca1c.png" alt="Схема проезда к офису" loading="lazy"><span class="mono">Схема проезда ↗</span></a></div>
       <div class="people reveal">
         <div class="person"><span class="mono">Директор</span><b>Муратов Сергей Алексеевич</b><a href="mailto:MuratovSA@asu-expert.ru">MuratovSA@asu-expert.ru</a></div>
@@ -529,7 +529,7 @@ def build_contacts():
 <section class="section" id="request">
   <div class="wrap">
     <form class="rform reveal" id="rform" novalidate>
-      <div class="rform-head"><p class="eyebrow mono">// запрос коммерческого предложения</p><h2 class="sec-title">Опишите задачу</h2>
+      <div class="rform-head"><p class="eyebrow mono">запрос коммерческого предложения</p><h2 class="sec-title">Опишите задачу</h2>
       <p>Форма откроет ваш почтовый клиент с готовым письмом на {EMAIL}.</p></div>
       <label><span>Имя и организация</span><input name="name" required autocomplete="organization"></label>
       <label><span>Телефон или e-mail</span><input name="contact" required autocomplete="email"></label>
@@ -545,12 +545,12 @@ def build_contacts():
 def build_clients():
     items = ''.join(f'<li class="client reveal" style="--i:{i % 6}"><span class="mono">{i + 1:02d}</span><b>{e(n)}</b><small>{e(c)}</small></li>'
                     for i, (n, c) in enumerate(CLIENTS))
-    body = page_hero('// заказчики', 'Нам доверяют <em>геофизики</em> пяти стран',
-                     'Горнодобывающие и нефтесервисные компании, геологоразведка, атомная отрасль и водоканалы — от Минска до Читы.',
+    body = page_hero('С 2009 года', 'Заказчики',
+                     'Горнодобывающие и нефтесервисные компании, геологоразведка, атомная отрасль и водоканалы.',
                      crumbs((None, 'Заказчики')))
     body += f'''<section class="section"><div class="wrap">
   <div class="geo reveal"><figure class="geo-map"><img src="img/ea7df1cb27ff50326722117e778418a5.png" alt="География заказчиков на карте" loading="lazy"></figure>
-  <div class="geo-text"><p class="eyebrow mono">// география поставок</p><h2 class="sec-title">Россия, Казахстан, Узбекистан, Беларусь</h2>
+  <div class="geo-text"><p class="eyebrow mono">география поставок</p><h2 class="sec-title">Россия, Казахстан, Узбекистан, Беларусь</h2>
   <p class="lead">Приборы работают на угольных разрезах Кузбасса, урановых месторождениях Забайкалья, в нефтесервисе Западной Сибири и на объектах атомной отрасли.</p></div></div>
   <ol class="clients">{items}</ol></div></section>'''
     write('clients', page('clients', 'Заказчики', body, active='clients'))
@@ -565,8 +565,8 @@ def build_news():
         rows = ''.join(f'<li class="nrow"><time class="mono" datetime="{n["iso"]}">{e(n["date"])}</time><p>{e(n["text"])}</p></li>'
                        for n in NEWS if n['year'] == y)
         groups += f'<section class="ngroup" data-y="{y}"><h2 class="ngroup-y">{y}</h2><ol>{rows}</ol></section>'
-    body = page_hero('// новости', 'Лента <em>отгрузок</em> и событий',
-                     f'{len(NEWS)} записей с 2010 года: поставки приборов, выигранные тендеры, ремонт и новые разработки.',
+    body = page_hero('Отгрузки · тендеры · ремонт', 'Новости',
+                     f'{len(NEWS)} {plural(len(NEWS), "запись", "записи", "записей")} с 2010 года: поставки приборов, выигранные тендеры, ремонт и новые разработки.',
                      crumbs((None, 'Новости')))
     body += f'''<section class="section"><div class="wrap">
   <div class="nfilter"><input type="search" id="nsearch" placeholder="Поиск по новостям: прибор, заказчик…" aria-label="Поиск по новостям"><div class="ychips">{chips}</div></div>
@@ -583,13 +583,13 @@ def build_certificates():
     def gal(lst):
         return ''.join(f'<a class="cert reveal" href="img/{i}" data-lightbox style="--i:{k % 5}"><img src="img/{i}" alt="Документ" loading="lazy"></a>'
                        for k, i in enumerate(lst))
-    body = page_hero('// документы', 'Сертификаты <em>и отзывы</em>',
+    body = page_hero('Документы', 'Сертификаты и отзывы',
                      'Декларации о соответствии ТР ТС / ЕАЭС и благодарственные письма заказчиков. Нажмите на документ, чтобы открыть его крупно.',
                      crumbs((None, 'Сертификаты')))
     body += f'''<section class="section"><div class="wrap">
-  <div class="sec-head"><p class="eyebrow mono">// декларации и сертификаты</p><h2 class="sec-title">Сертификаты</h2></div>
+  <div class="sec-head"><p class="eyebrow mono">декларации и сертификаты</p><h2 class="sec-title">Сертификаты</h2></div>
   <div class="certs">{gal(certs)}</div>
-  <div class="sec-head" style="margin-top:clamp(56px,8vw,96px)"><p class="eyebrow mono">// отзывы</p><h2 class="sec-title">Отзывы заказчиков</h2></div>
+  <div class="sec-head" style="margin-top:clamp(56px,8vw,96px)"><p class="eyebrow mono">отзывы</p><h2 class="sec-title">Отзывы заказчиков</h2></div>
   <div class="certs">{gal(reviews)}</div>
 </div></section>
 <div class="lightbox" id="lightbox" hidden><button aria-label="Закрыть">×</button><img alt=""></div>'''
@@ -616,32 +616,33 @@ def build_index():
     electric = ['kp-51e', 'kp-71egtr', 'kp-82bkr', 'kp-81eg']
 
     body = f'''<section class="hero" id="hero">
-  <canvas id="well" aria-hidden="true"></canvas>
-  <div class="hero-vignette" aria-hidden="true"></div>
-  <div class="wrap hero-in">
-    <p class="eyebrow mono hero-eyebrow"><span class="rec"></span>НПП · Томск · с 2009 года</p>
-    <h1 class="hero-title"><span class="line"><span>Видим скважину</span></span><span class="line"><span>насквозь<em>.</em></span></span></h1>
-    <p class="hero-lead">Разрабатываем и производим скважинные геофизические приборы, каротажные лаборатории и регистраторы для нефтяных, газовых, рудных и водяных скважин.</p>
-    <div class="hero-actions">
-      <a class="btn btn-red" href="catalog.html">Каталог приборов</a>
-      <a class="btn btn-ghost" href="contacts.html#request">Подобрать оборудование</a>
+  <div class="wrap hero-grid">
+    <div class="hero-in">
+      <p class="eyebrow mono">Научно-производственное предприятие · Томск · с 2009 года</p>
+      <h1 class="hero-title">Геофизические приборы для исследования скважин</h1>
+      <p class="hero-lead">Скважинные приборы электрического, гамма- и видеокаротажа, каротажные лаборатории и регистраторы. Работаем с нефтяными, газовыми, рудными и водяными скважинами.</p>
+      <div class="hero-actions">
+        <a class="btn btn-red" href="catalog.html">Каталог приборов</a>
+        <a class="btn btn-ghost" href="contacts.html#request">Подобрать оборудование</a>
+      </div>
+      <dl class="hero-facts">
+        <div><dt class="mono">Кабель</dt><dd>одно- и трёхжильный</dd></div>
+        <div><dt class="mono">Телеметрия</dt><dd>цифровая, «Манчестер-2»</dd></div>
+        <div><dt class="mono">Документы</dt><dd>декларации ТР ТС / ЕАЭС</dd></div>
+      </dl>
     </div>
+    <figure class="hero-log" aria-label="Пример каротажной диаграммы: литология, ГК, КС и ПС по глубине">
+      {well_log_svg()}
+      <figcaption class="mono">Пример диаграммы: литология, ГК, КС, ПС</figcaption>
+    </figure>
   </div>
-  <div class="telemetry mono" aria-hidden="true">
-    <p class="tm-h">ТЕЛЕМЕТРИЯ · МАНЧЕСТЕР-2</p>
-    <div><span>ГК</span><b data-tm="gk">12.4</b><i>мкР/ч</i></div>
-    <div><span>КС</span><b data-tm="ks">238</b><i>Ом·м</i></div>
-    <div><span>ПС</span><b data-tm="ps">−41</b><i>мВ</i></div>
-    <div><span>T</span><b data-tm="t">+18.6</b><i>°C</i></div>
-  </div>
-  <a class="hero-scroll mono" href="#directions">Погружение<span></span></a>
 </section>
 
 <div class="ticker" aria-label="Последние отгрузки"><div class="ticker-track">{ticker}{ticker}</div></div>
 
 <section class="section" id="directions">
   <div class="wrap">
-    <div class="sec-head"><p class="eyebrow mono">// направления</p><h2 class="sec-title split">Четыре направления — одно производство</h2>
+    <div class="sec-head"><p class="eyebrow mono">направления</p><h2 class="sec-title split">Что мы выпускаем</h2>
     <a class="link-arrow" href="catalog.html">Весь каталог</a></div>
     <div class="dirs">{cats}</div>
   </div>
@@ -654,7 +655,7 @@ def build_index():
       <figure class="feature-log"><img src="img/ba03a947ccb50c6f471ee1153a7d5dd1.JPG" alt="Каротажная лаборатория ГЕОФИТ 1003" loading="lazy"><figcaption class="mono">ГЕОФИТ 1003</figcaption></figure>
     </div>
     <div class="feature-text">
-      <p class="eyebrow mono">// регистрирующая аппаратура</p>
+      <p class="eyebrow mono">регистрирующая аппаратура</p>
       <h2 class="sec-title split">Каротажная лаборатория ГЕОФИТ</h2>
       <p class="lead">Комплексные геофизические исследования нефтяных, рудных и газовых скважин — запись, калибровка и обработка в одном комплексе.</p>
       <ol class="steps">
@@ -670,10 +671,10 @@ def build_index():
 
 <section class="section electric">
   <div class="wrap">
-    <div class="sec-head"><p class="eyebrow mono">// электрический и гамма-каротаж</p><h2 class="sec-title split">Один спуско-подъём — все параметры</h2></div>
+    <div class="sec-head"><p class="eyebrow mono">электрический и гамма-каротаж</p><h2 class="sec-title split">Все измерения за один спуско-подъём</h2></div>
     <div class="adv">
       <div class="adv-item reveal"><span class="mono">01</span><b>Одновременно</b><p>Измерение и передача на поверхность параметров всеми зондами во всём диапазоне.</p></div>
-      <div class="adv-item reveal"><span class="mono">02</span><b>Цифра по одной жиле</b><p>Цифровая передача данных через одножильный каротажный кабель, код «Манчестер-2».</p></div>
+      <div class="adv-item reveal"><span class="mono">02</span><b>Одножильный кабель</b><p>Цифровая передача данных через одножильный каротажный кабель, код «Манчестер-2».</p></div>
       <div class="adv-item reveal"><span class="mono">03</span><b>Без калибровки</b><p>Не нужна калибровка и настройка перед записью, нет наземной панели.</p></div>
       <div class="adv-item reveal"><span class="mono">04</span><b>Совместимость</b><p>Сопряжение со всеми выпускаемыми каротажными регистраторами.</p></div>
     </div>
@@ -685,8 +686,8 @@ def build_index():
   <div class="video-pin">
     <div class="wrap video-head">
       <div>
-        <p class="eyebrow mono">// видеокаротаж</p>
-        <h2 class="sec-title split">Видим дефект до того, как он станет аварией</h2>
+        <p class="eyebrow mono">видеокаротаж</p>
+        <h2 class="sec-title split">Видеозапись состояния колонн и фильтров</h2>
       </div>
       <ul class="defects">
         <li>смятие труб, трещины в колонне</li><li>отсутствие сальника между колоннами</li><li>деформация надфильтровой трубы</li>
@@ -701,7 +702,7 @@ def build_index():
 <section class="section cement">
   <div class="wrap split-2">
     <div class="reveal">
-      <p class="eyebrow mono">// цементирование</p>
+      <p class="eyebrow mono">цементирование</p>
       <h2 class="sec-title">Станция контроля цементирования нефтяных скважин</h2>
       <p class="lead">Датчики расхода, давления, плотности и температуры. Установка опрессована на 40 МПа по требованиям Госгортехнадзора РФ.</p>
       <p>Программное обеспечение контролирует заливку ствола в реальном времени и позволяет оперативно вмешаться — риск аварийной ситуации сводится к минимуму. По результатам формируются отчёты в графической и табличной форме.</p>
@@ -709,9 +710,9 @@ def build_index():
     </div>
     <div class="gaugeset reveal" aria-hidden="true">
       <div class="dial" data-v="0.72"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">40</b><span class="mono">МПа</span></div>
-      <div class="dial" data-v="0.48"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">1.86</b><span class="mono">г/см³</span></div>
+      <div class="dial" data-v="0.48"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">ρ</b><span class="mono">плотность</span></div>
       <div class="dial" data-v="0.6"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">Q</b><span class="mono">расход</span></div>
-      <div class="dial" data-v="0.35"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">T</b><span class="mono">°C</span></div>
+      <div class="dial" data-v="0.35"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="dial-v" cx="60" cy="60" r="50"/></svg><b class="mono">T</b><span class="mono">температура</span></div>
     </div>
   </div>
 </section>
@@ -719,18 +720,109 @@ def build_index():
 {stats_html()}
 
 <section class="section clients-sec">
-  <div class="wrap"><div class="sec-head"><p class="eyebrow mono">// заказчики</p><h2 class="sec-title split">Работаем от Минска до Читы</h2><a class="link-arrow" href="clients.html">Все заказчики</a></div></div>
+  <div class="wrap"><div class="sec-head"><p class="eyebrow mono">заказчики</p><h2 class="sec-title split">Заказчики в России, Казахстане, Узбекистане и Беларуси</h2><a class="link-arrow" href="clients.html">Все заказчики</a></div></div>
   <div class="marquee"><div class="marquee-track">{clients}{clients}</div></div>
 </section>
 
 <section class="section">
   <div class="wrap">
-    <div class="sec-head"><p class="eyebrow mono">// новости</p><h2 class="sec-title split">Свежие отгрузки</h2><a class="link-arrow" href="news.html">Все новости</a></div>
+    <div class="sec-head"><p class="eyebrow mono">новости</p><h2 class="sec-title split">Свежие отгрузки</h2><a class="link-arrow" href="news.html">Все новости</a></div>
     <ol class="nlist">{news}</ol>
   </div>
 </section>'''
-    extra_js = '<script type="module" src="js/hero.js"></script>'
-    write('index', page('index', 'Главная', body, extra_js=extra_js))
+    write('index', page('index', 'Главная', body))
+
+
+
+def well_log_svg():
+    """Статичная каротажная диаграмма для первого экрана.
+
+    Кривые согласованы с литологией: в глинах ГК выше и ПС у линии глин,
+    в песчаниках ГК низкий и ПС отклоняется влево, в известняках и углях КС растёт.
+    """
+    import math
+    import random
+    rnd = random.Random(1003)
+    W, H, top = 520, 760, 64
+    cols = {'depth': (0, 58), 'lith': (58, 100), 'gk': (100, 240), 'ks': (240, 380), 'ps': (380, 520)}
+    d0, d1 = 1200, 1290
+    yd = lambda d: top + 8 + (d - d0) / (d1 - d0) * (H - top - 22)
+    layers = [(1200, 1209, 'clay'), (1209, 1221, 'sand'), (1221, 1225, 'clay'), (1225, 1232, 'lime'),
+              (1232, 1240, 'clay'), (1240, 1244, 'coal'), (1244, 1259, 'sand'), (1259, 1266, 'clay'),
+              (1266, 1273, 'lime'), (1273, 1281, 'sand'), (1281, 1290, 'clay')]
+    # значения в долях ширины трека: (ГК, КС, ПС)
+    base = {'clay': (0.72, 0.18, 0.78), 'sand': (0.25, 0.42, 0.28), 'lime': (0.18, 0.78, 0.66), 'coal': (0.08, 0.92, 0.7)}
+
+    def lith_at(d):
+        for a, b, t in layers:
+            if a <= d < b:
+                return t
+        return 'clay'
+
+    def smooth_val(d, k):
+        # сглаживаем переходы на границах пластов, чтобы кривая выглядела как запись прибора
+        acc, wsum = 0.0, 0.0
+        for dd in (-1.2, -0.6, 0, 0.6, 1.2):
+            w = 1.6 - abs(dd)
+            acc += base[lith_at(d + dd)][k] * w
+            wsum += w
+        return acc / wsum
+
+    noise = {k: [rnd.uniform(-1, 1) for _ in range(400)] for k in range(3)}
+
+    def path(k, col, amp):
+        x0, x1 = cols[col]
+        pts = []
+        steps = 360
+        for i in range(steps + 1):
+            d = d0 + (d1 - d0) * i / steps
+            n = noise[k][i % 400] * amp + math.sin(d * 1.7 + k) * amp * 0.6
+            v = min(0.96, max(0.04, smooth_val(d, k) + n))
+            pts.append(f'{x0 + 8 + v * (x1 - x0 - 16):.1f},{yd(d):.1f}')
+        return 'M' + ' L'.join(pts)
+
+    grid = []
+    for d in range(d0, d1 + 1):
+        y = yd(d)
+        major = d % 10 == 0
+        if d % 2 == 0 or major:
+            grid.append(f'<line x1="{cols["lith"][1]}" x2="{W}" y1="{y:.1f}" y2="{y:.1f}" class="{"g-major" if major else "g-minor"}"/>')
+        if major:
+            grid.append(f'<text x="50" y="{y + 4:.1f}" class="lg-depth">{d}</text>')
+            grid.append(f'<line x1="52" x2="58" y1="{y:.1f}" y2="{y:.1f}" class="g-major"/>')
+    for col in ('gk', 'ks', 'ps'):
+        x0, x1 = cols[col]
+        for j in range(1, 4):
+            x = x0 + (x1 - x0) * j / 4
+            grid.append(f'<line x1="{x:.1f}" x2="{x:.1f}" y1="{top}" y2="{H}" class="g-minor"/>')
+    for x in (58, 100, 240, 380):
+        grid.append(f'<line x1="{x}" x2="{x}" y1="0" y2="{H}" class="g-col"/>')
+    lith = ''.join(f'<rect x="{cols["lith"][0]}" y="{yd(a):.1f}" width="{cols["lith"][1] - cols["lith"][0]}" height="{yd(b) - yd(a):.1f}" fill="url(#p-{t})"/>'
+                   for a, b, t in layers)
+    heads = [
+        ('depth', 'Глуб.', 'м', ''), ('lith', 'Лит.', '', ''),
+        ('gk', 'ГК', 'мкР/ч', '0 — 30'), ('ks', 'КС', 'Ом·м', '1 — 1000'), ('ps', 'ПС', 'мВ', '−80 — 20'),
+    ]
+    head = ''.join(f'<text x="{(cols[c][0] + cols[c][1]) / 2}" y="22" class="lg-name lg-{c}">{n}</text>'
+                   f'<text x="{(cols[c][0] + cols[c][1]) / 2}" y="38" class="lg-unit">{u}</text>'
+                   f'<text x="{(cols[c][0] + cols[c][1]) / 2}" y="54" class="lg-unit">{r}</text>'
+                   for c, n, u, r in heads)
+    return f'''<svg class="wlog" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMin meet" role="img">
+<defs>
+<pattern id="p-sand" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" class="lt-sand"/><circle cx="2" cy="2" r=".9" class="lt-dot"/><circle cx="6" cy="6" r=".9" class="lt-dot"/></pattern>
+<pattern id="p-clay" width="12" height="6" patternUnits="userSpaceOnUse"><rect width="12" height="6" class="lt-clay"/><line x1="1" x2="9" y1="3" y2="3" class="lt-line"/></pattern>
+<pattern id="p-lime" width="16" height="8" patternUnits="userSpaceOnUse"><rect width="16" height="8" class="lt-lime"/><path d="M0 .5H16M0 4.5H16M4 .5V4.5M12 4.5V8" class="lt-line"/></pattern>
+<pattern id="p-coal" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" class="lt-coal"/></pattern>
+</defs>
+<rect x="0" y="0" width="{W}" height="{top}" class="lg-headbg"/>
+{head}
+<line x1="0" x2="{W}" y1="{top}" y2="{top}" class="g-col"/>
+{lith}
+{''.join(grid)}
+<path d="{path(2, 'ps', 0.018)}" class="cv cv-ps" pathLength="1"/>
+<path d="{path(1, 'ks', 0.03)}" class="cv cv-ks" pathLength="1"/>
+<path d="{path(0, 'gk', 0.035)}" class="cv cv-gk" pathLength="1"/>
+</svg>'''
 
 
 def write(slug, text):
