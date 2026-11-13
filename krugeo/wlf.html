@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f6">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1117">
+<title>Комплекс программ WLF — ООО «Фирма «КруКо»</title>
+<meta name="description" content="WLF — комплекс программ для обработки и анализа данных электроразведки: проектирование, моделирование и инверсия, трансформации, визуализация.">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/site.css">
+<script type="module" src="js/nav.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Перейти к содержанию</a>
+<header class="site-header">
+  <div class="header-inner wrap">
+    <a class="site-logo" href="index.html"><svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 30h32"/><circle cx="12" cy="30" r="2.6" fill="currentColor" stroke="none"/><circle cx="28" cy="30" r="2.6" fill="currentColor" stroke="none"/><path d="M12 30C12 18 28 18 28 30" opacity=".95"/><path d="M8 30C8 12 32 12 32 30" opacity=".6"/><path d="M4.5 30C4.5 5.5 35.5 5.5 35.5 30" opacity=".3"/></svg><span>КруКо<small>геофизическая аппаратура</small></span></a>
+    <nav class="site-nav" aria-label="Основная">
+      <button class="menu-button" type="button" popovertarget="site-menu" popovertargetaction="toggle" aria-controls="site-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Меню</span></button>
+      <ul id="site-menu" class="site-menu" popover="auto"><li><a href="index.html">О компании</a></li><li class="nav-dropdown"><button class="dropdown-trigger" type="button" aria-expanded="false" aria-controls="sub-hardware" popovertarget="sub-hardware">Аппаратура<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></button><ul id="sub-hardware" class="dropdown-list"><li><a href="age-xxl.html">Электроразведочный комплекс AGE-xxl</a></li><li><a href="age-xxl-h.html">Автономные измерители AGE-xxl-h</a></li><li><a href="age-xxl-linear.html">Линейные измерители AGE-xxl</a></li><li><a href="ucs-02m.html">Коммутаторы тока UCS-02М</a></li><li><a href="fa-100.html">Выносной усилитель FA-100</a></li><li><a href="imd-100.html">Индукционный датчик IMD-100</a></li></ul></li><li class="nav-dropdown"><button class="dropdown-trigger" type="button" aria-expanded="false" aria-controls="sub-software" popovertarget="sub-software">Программы<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></button><ul id="sub-software" class="dropdown-list"><li><a href="software.html">Программное обеспечение</a></li><li><a href="wlf.html" aria-current="page">Комплекс программ WLF</a></li></ul></li><li class="nav-dropdown"><button class="dropdown-trigger" type="button" aria-expanded="false" aria-controls="sub-fieldwork" popovertarget="sub-fieldwork">Полевые работы<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></button><ul id="sub-fieldwork" class="dropdown-list"><li><a href="emp-bz.html">Электроразведка ЭМП-БЗ</a></li><li><a href="nse.html">Наземно-скважинная электроразведка</a></li><li><a href="examples.html">Примеры работ</a></li></ul></li><li><a href="docs.html">Документация</a></li><li><a href="index.html#contacts">Контакты</a></li></ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="page-head">
+  <div class="wrap">
+    <nav class="breadcrumbs" aria-label="Навигационная цепочка"><ol><li><a href="index.html">Главная</a></li><li><a href="software.html">Программы</a></li><li><a href="wlf.html" aria-current="page">Комплекс программ WLF</a></li></ol></nav>
+    <h1>Комплекс программ WLF</h1>
+    <p class="lead">Обработка и анализ данных электроразведки. Разработан в среде MATLAB, поставляется в виде загружаемых модулей и не требует предустановки MATLAB.</p>
+  </div>
+</div>
+<div class="section article">
+  <div class="wrap">
+    <div class="article-grid">
+      <div class="prose">
+<p>Комплекс предоставляет стандартный интерактивный графический интерфейс MATLAB. По желанию заказчика возможна поставка исходных текстов программ и описаний структуры данных для самостоятельного развития функциональных возможностей.</p>
+<h2 id="wlf-mods">Возможности</h2>
+<section class="accordion" aria-labelledby="wlf-mods">
+  <details name="wlf" open>
+    <summary>Проектирование полевых работ</summary>
+    <div class="panel"><ul>
+      <li>Привязка сканированных карт к системе координат пользователя.</li>
+      <li>Проектирование измерительных профилей и питающих источников.</li>
+      <li>Проектирование временной диаграммы источника тока.</li>
+      <li>Обработка цифровых каротажных диаграмм и построение геоэлектрических моделей.</li>
+    </ul></div>
+  </details>
+  <details name="wlf">
+    <summary>Моделирование и инверсия</summary>
+    <div class="panel"><p class="muted">Горизонтально-слоистая модель среды с учётом поляризации.</p><ul>
+      <li>Расчёт произвольных полей различных типов наземного источника во временной (ЗС) и частотной (ЧЗ) области.</li>
+      <li>Расчёт электрического поля вертикального (скважинного) источника в частотной области с учётом обсадной колонны.</li>
+      <li>Решение обратной задачи для методов ЧЗ и ЗС.</li>
+    </ul></div>
+  </details>
+  <details name="wlf">
+    <summary>Обработка полевых данных AGE-xxl</summary>
+    <div class="panel"><ul>
+      <li>Просмотр полевых записей и редакция служебных этикеток.</li>
+      <li>Обработка записей режимов ЧЗ и ЗС, формирование базы данных по площади.</li>
+      <li>Статистика полевых работ: оценки качества и производительности.</li>
+    </ul></div>
+  </details>
+  <details name="wlf">
+    <summary>Геофизические трансформации и расчёт параметров</summary>
+    <div class="panel"><ul>
+      <li>Поле эффективных сопротивлений R<sub>ω</sub>, R<sub>t</sub> (нормировка на полупространство) для любой зоны источника.</li>
+      <li>S<sub>t</sub>, H<sub>t</sub> для ближней зоны (трансформация Тикшаева–Сидорова).</li>
+      <li>S<sub>t</sub>, H<sub>t</sub> для произвольной зоны (трансформация Грозы).</li>
+      <li>Интервальные сопротивления и построение слоистой модели среды.</li>
+      <li>Поляризационные параметры во временной и частотной области.</li>
+      <li>Дифференциальные параметры для скважинно-наземной электроразведки.</li>
+    </ul></div>
+  </details>
+  <details name="wlf">
+    <summary>Анализ и визуализация данных</summary>
+    <div class="panel"><ul>
+      <li>Преобразования полей во временной (частотной) и пространственной области.</li>
+      <li>Выделение регионального (фонового) и аномального поля.</li>
+      <li>Графики, карты, разрезы, поверхности, тела и сечения (2D и 3D).</li>
+      <li>Формирование отчётных изображений и экспорт результатов в различных форматах.</li>
+    </ul></div>
+  </details>
+</section>
+</div>
+      <aside class="article-aside" aria-label="Иллюстрации"><figure class="figure reveal"><picture><source srcset="img/wlf-overview.webp" type="image/webp"><img src="img/wlf-overview.jpg" alt="Плакат с обзором модулей WLF: проектирование, обработка, трансформации, моделирование и визуализация" width="285" height="407" decoding="async"></picture><figcaption>Обзор возможностей WLF.</figcaption></figure><p class="muted after"><a href="docs.html#wlf">Руководство пользователя WLF →</a></p></aside>
+    </div>
+    <nav class="pager" aria-label="Соседние страницы раздела"><a href="software.html" rel="prev"><span>← Назад</span>Программное обеспечение</a></nav>
+  </div>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <section aria-labelledby="f-hw"><h2 id="f-hw">Аппаратура</h2><ul class="plain"><li><a href="age-xxl.html">Электроразведочный комплекс AGE-xxl</a></li><li><a href="age-xxl-h.html">Автономные измерители AGE-xxl-h</a></li><li><a href="age-xxl-linear.html">Линейные измерители AGE-xxl</a></li><li><a href="ucs-02m.html">Коммутаторы тока UCS-02М</a></li><li><a href="fa-100.html">Выносной усилитель FA-100</a></li><li><a href="imd-100.html">Индукционный датчик IMD-100</a></li></ul></section>
+      <section aria-labelledby="f-fw"><h2 id="f-fw">Полевые работы</h2><ul class="plain"><li><a href="emp-bz.html">Электроразведка ЭМП-БЗ</a></li><li><a href="nse.html">Наземно-скважинная электроразведка</a></li><li><a href="examples.html">Примеры работ</a></li></ul></section>
+      <section aria-labelledby="f-sw"><h2 id="f-sw">Программы и документы</h2><ul class="plain"><li><a href="software.html">Программное обеспечение</a></li><li><a href="wlf.html">Комплекс программ WLF</a></li><li><a href="docs.html">Документация</a></li></ul></section>
+      <section aria-labelledby="f-ct"><h2 id="f-ct">Связаться</h2>
+        <address>
+          <p><a href="tel:+79857639382">+7 (985) 763-93-82</a></p>
+          <p><a href="tel:+79850559127">+7 (985) 055-91-27</a></p>
+          <p><a href="mailto:evgueni@krugeo.ru">evgueni@krugeo.ru</a></p>
+        </address>
+      </section>
+    </div>
+    <p class="copyright">© 1992–2026 ООО «Фирма «КруКо». Разработка, производство и внедрение электроразведочной аппаратуры.</p>
+  </div>
+</footer>
+</body>
+</html>
