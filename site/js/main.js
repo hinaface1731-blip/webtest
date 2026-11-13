@@ -14,14 +14,16 @@
   /* ---------- мобильное меню */
   const burger = $('#burger');
   const mnav = $('#mnav');
-  burger.addEventListener('click', () => {
-    const open = mnav.hidden;
-    mnav.hidden = !open;
+  // Меню — нативный popover (кнопка открывает его через popovertarget, Esc и клик мимо закрывают).
+  // Старым браузерам без Popover API подгружаем полифил только при необходимости.
+  if (!Object.hasOwn(HTMLElement.prototype, 'popover')) {
+    import('https://unpkg.com/@oddbird/popover-polyfill@0.7.3/dist/popover.min.js').catch(() => {});
+  }
+  mnav.addEventListener('toggle', (e) => {
+    const open = e.newState === 'open';
     burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
     document.body.style.overflow = open ? 'hidden' : '';
   });
-  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mnav.hidden) burger.click(); });
 
   /* ---------- появление частей раздела: заголовок, текст, картинка */
   const io = new IntersectionObserver((entries) => entries.forEach((en) => {
@@ -117,27 +119,51 @@
   /* ---------- лайтбокс документов */
   const lb = $('#lightbox');
   if (lb) {
+    // Нативный <dialog>: showModal() даёт верхний слой, ловушку фокуса и Esc;
+    // closedby="any" закрывает по клику на фон. Где closedby нет (Safari), закрываем вручную.
     const img = lb.querySelector('img');
-    const close = () => { lb.hidden = true; };
     $$('[data-lightbox]').forEach((a) => a.addEventListener('click', (e) => {
-      e.preventDefault(); img.src = a.getAttribute('href'); img.alt = a.querySelector('img').alt; lb.hidden = false; lb.querySelector('button').focus();
+      e.preventDefault(); img.src = a.getAttribute('href'); img.alt = a.querySelector('img').alt; lb.showModal();
     }));
-    lb.addEventListener('click', close);
-    addEventListener('keydown', (e) => { if (e.key === 'Escape' && !lb.hidden) close(); });
+    if (!('closedBy' in HTMLDialogElement.prototype)) {
+      lb.addEventListener('click', (e) => {
+        if (e.target !== lb) return;
+        const r = lb.getBoundingClientRect();
+        const inside = r.top <= e.clientY && e.clientY <= r.bottom && r.left <= e.clientX && e.clientX <= r.right;
+        if (!inside) lb.close();
+      });
+    }
   }
 
   /* ---------- форма запроса -> письмо */
   const form = $('#rform');
   if (form) {
+    // aria-invalid следует за :user-invalid, текст ошибки привязан через aria-describedby
+    // только пока ошибка видна, чтобы его не зачитывали заранее.
+    const linkError = (el, shown) => {
+      const id = el.dataset.error;
+      if (!id) return;
+      const ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter((x) => x && x !== id);
+      if (shown) ids.push(id);
+      if (ids.length) el.setAttribute('aria-describedby', ids.join(' ')); else el.removeAttribute('aria-describedby');
+    };
+    const sync = (el) => {
+      if (!el.matches?.('input, select, textarea')) return;
+      const bad = el.matches(':user-invalid');
+      el.setAttribute('aria-invalid', String(bad));
+      linkError(el, bad);
+    };
+    [...form.elements].forEach(sync);
+    form.addEventListener('blur', (e) => sync(e.target), true);
+    form.addEventListener('input', (e) => sync(e.target));
+    form.addEventListener('change', (e) => sync(e.target), true);
+    form.addEventListener('invalid', (e) => sync(e.target), true);
+
+    // Браузер сам проверяет обязательные поля и переводит фокус на первое неверное;
+    // submit срабатывает только для заполненной формы.
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const f = new FormData(form);
-      let bad = false;
-      ['name', 'contact'].forEach((k) => {
-        const inp = form.elements[k]; const empty = !String(f.get(k)).trim();
-        inp.classList.toggle('is-bad', empty); bad ||= empty;
-      });
-      if (bad) return;
       const subject = `Запрос КП${f.get('product') ? ': ' + f.get('product') : ''}`;
       const body = `Имя / организация: ${f.get('name')}\nКонтакт: ${f.get('contact')}\nПрибор: ${f.get('product') || 'нужна консультация'}\n\n${f.get('msg')}`;
       location.href = `mailto:info@asu-expert.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

@@ -243,7 +243,7 @@ def nav_html(active):
         for c in CATEGORIES)
     links = []
     for slug, label in items:
-        cls = ' class="is-active"' if slug == active else ''
+        cls = ' aria-current="page"' if slug == active else ''
         if slug == 'catalog':
             links.append(f'''<li class="has-mega"><a href="catalog.html"{cls}>{label}<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></a>
 <div class="mega"><div class="mega-inner">{mega}</div></div></li>''')
@@ -280,10 +280,10 @@ def page(slug, title, body, desc='', active=None, foot_photo=None):
     <nav class="nav" aria-label="Основное меню"><ul>{nav_html(active)}</ul></nav>
     <a class="hdr-phone" href="tel:{PHONE_HREF}">{PHONE}</a>
     <a class="btn btn-sm btn-red hdr-cta" href="contacts.html#request">Запросить КП</a>
-    <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mnav"><span></span><span></span></button>
+    <button class="burger" id="burger" type="button" popovertarget="mnav" aria-controls="mnav" aria-expanded="false"><span aria-hidden="true"></span><span aria-hidden="true"></span><span class="visually-hidden">Меню</span></button>
   </div>
 </header>
-<div class="mnav" id="mnav" hidden>
+<div class="mnav" id="mnav" popover="auto">
   <nav class="mnav-in" aria-label="Мобильное меню">
     <a href="catalog.html">Каталог</a>{mlinks}<a href="company.html">О компании</a><a href="clients.html">Заказчики</a>
     <a href="news.html">Новости</a><a href="certificates.html">Сертификаты</a><a href="contacts.html">Контакты</a>
@@ -349,7 +349,7 @@ def page_hero(title, lead, crumb_html, media, extra=''):
     <p class="phero-lead rv" style="--d:1">{lead}</p>
     {extra}
   </div>
-  <figure class="phero-media {kind}"><img src="{src}" alt="{e(alt)}">{figcap}</figure>
+  <figure class="phero-media {kind}"><img src="{src}" alt="{e(alt)}" fetchpriority="high">{figcap}</figure>
 </section>'''
 
 
@@ -528,13 +528,13 @@ def build_contacts():
   <div class="map rv" style="--d:1"><iframe src="https://yandex.ru/map-widget/v1/-/CCUuY2HrhA" title="АСУ-ЭКСПЕРТ на Яндекс Картах" loading="lazy" allowfullscreen></iframe></div>
 </section>
 <section class="section" id="request">
-  <form class="rform" id="rform" novalidate>
+  <form class="rform" id="rform">
     <div class="rform-head"><h2 class="sec-title rv">Опишите задачу</h2>
     <p>Форма откроет вашу почтовую программу с готовым письмом на {EMAIL}.</p></div>
-    <label><span>Имя и организация</span><input name="name" required autocomplete="organization"></label>
-    <label><span>Телефон или почта</span><input name="contact" required autocomplete="email"></label>
-    <label class="full"><span>Прибор</span><select name="product"><option value="">Пока не знаю, нужна консультация</option>{''.join(f'<option>{e(p["name"])} — {e(p["kind"])}</option>' for p in PRODUCTS.values())}</select></label>
-    <label class="full"><span>Задача: тип скважин, глубина, кабель, регистратор</span><textarea name="msg" rows="5"></textarea></label>
+    <div class="field"><label for="f-name">Имя и организация</label><input id="f-name" name="name" required autocomplete="organization" data-error="e-name"><span id="e-name" class="error-msg">Укажите имя или организацию.</span></div>
+    <div class="field"><label for="f-contact">Телефон или почта</label><input id="f-contact" name="contact" required autocomplete="email" data-error="e-contact"><span id="e-contact" class="error-msg">Укажите, как с вами связаться.</span></div>
+    <div class="field full"><label for="f-product">Прибор</label><select id="f-product" name="product"><option value="">Пока не знаю, нужна консультация</option>{''.join(f'<option>{e(p["name"])} — {e(p["kind"])}</option>' for p in PRODUCTS.values())}</select></div>
+    <div class="field full"><label for="f-msg">Задача: тип скважин, глубина, кабель, регистратор</label><textarea id="f-msg" name="msg" rows="5"></textarea></div>
     <button class="btn btn-red" type="submit">Сформировать письмо</button>
   </form>
 </section>''' + band(BAND_FIELD)
@@ -602,7 +602,7 @@ def build_certificates():
   <div class="certs">{gal(reviews, 'Отзыв заказчика')}</div>
 </section>
 ''' + band(BAND_WELL) + '''
-<div class="lightbox" id="lightbox" hidden><button aria-label="Закрыть">×</button><img alt=""></div>'''
+<dialog class="lightbox" id="lightbox" closedby="any" aria-label="Документ"><form method="dialog"><button aria-label="Закрыть">×</button></form><img alt=""></dialog>'''
     write('certificates', page('certificates', 'Сертификаты и отзывы', body))
 
 
@@ -646,7 +646,7 @@ def build_index():
         if s == 'VIDEO':
             return (f'<video muted loop playsinline preload="none" poster="{photo("borehole-camera.jpg")}" aria-label="{e(a)}">'
                     f'<source src="{photo("borehole-camera.webm")}" type="video/webm"></video>')
-        return f'<img src="{s}" alt="{e(a)}"{"" if i == 0 else " loading=\"lazy\""}>'
+        return f'<img src="{s}" alt="{e(a)}"{" fetchpriority=\"high\"" if i == 0 else " loading=\"lazy\""}>'
     stage_html = ''.join(f'<figure class="{k}{" is-on" if i == 0 else ""}" data-stage="{i}">{stage_media(i, s, a)}<figcaption>{e(c)}</figcaption></figure>'
                          for i, (s, a, c, k) in enumerate(stage))
 
@@ -743,7 +743,33 @@ def build_index():
     write('index', page('index', 'Главная', body, foot_photo=('drill-core-boxes.jpg', 'Керн в ящиках после бурения')))
 
 
+_SIZES = {}
+
+
+def img_size(src):
+    if src not in _SIZES:
+        path = os.path.join(HERE, 'static', src)
+        try:
+            from PIL import Image
+            with Image.open(path) as im:
+                _SIZES[src] = im.size
+        except Exception:
+            _SIZES[src] = None
+    return _SIZES[src]
+
+
+def add_img_sizes(text):
+    def rep(m):
+        tag = m.group(0)
+        if ' width=' in tag:
+            return tag
+        size = img_size(m.group(1))
+        return tag if not size else tag.replace('<img ', f'<img width="{size[0]}" height="{size[1]}" ', 1)
+    return re.sub(r'<img [^>]*?src="((?:img|photos)/[^"]+)"[^>]*>', rep, text)
+
+
 def write(slug, text):
+    text = add_img_sizes(text)
     with open(os.path.join(OUT, slug + '.html'), 'w', encoding='utf-8') as f:
         f.write(text)
 

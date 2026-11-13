@@ -87,7 +87,7 @@ ul, ol { list-style: none; }
 .nav > ul { display: flex; gap: 4px; }
 .nav > ul > li > a { display: inline-flex; align-items: center; gap: 6px; padding: 10px 12px; font-size: var(--t-small); font-weight: 500; transition: color .2s, background .2s; }
 .nav > ul > li > a:hover, .nav > ul > li > a:focus-visible { background: var(--paper-2); }
-.nav > ul > li > a.is-active { color: var(--red); }
+.nav > ul > li > a[aria-current="page"] { color: var(--red-2); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
 .nav svg { width: 10px; height: 6px; fill: none; stroke: currentColor; stroke-width: 1.6; }
 .has-mega { position: static; }
 .mega { position: absolute; left: 0; right: 0; top: 100%; display: none; }
@@ -106,8 +106,9 @@ ul, ol { list-style: none; }
 .burger span:last-child { top: 27px; }
 .burger[aria-expanded="true"] span:first-child { top: 23px; transform: rotate(45deg); }
 .burger[aria-expanded="true"] span:last-child { top: 23px; transform: rotate(-45deg); }
-.mnav { position: fixed; inset: var(--hdr-h) 0 0; z-index: 45; background: var(--sheet); padding: 24px var(--margin) 40px; overflow-y: auto; }
-.mnav[hidden] { display: none; }
+/* мобильное меню — нативный popover: Esc и клик мимо закрывают его без скриптов */
+.mnav { position: fixed; inset: var(--hdr-h) 0 0; width: auto; height: auto; max-width: none; max-height: none; margin: 0; border: 0; background: var(--sheet); color: var(--ink); padding: 24px var(--margin) 40px; overflow-y: auto; }
+.mnav::backdrop { background: transparent; }
 .mnav-in { display: flex; flex-direction: column; }
 .mnav-in > a { font: 600 30px/1.2 var(--f-display); padding: 8px 0; }
 .mnav-contacts { display: grid; gap: 8px; margin-top: 28px; font-size: var(--t-body); }
@@ -377,12 +378,14 @@ a.ccard:hover small { color: #c9d3dd; }
 .rform { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: clamp(24px, 4vw, 56px); background: var(--sheet); }
 .rform-head { grid-column: 1 / -1; }
 .rform-head p { margin-top: 12px; color: var(--muted); }
-.rform label { display: grid; gap: 8px; }
-.rform label.full { grid-column: 1 / -1; }
-.rform label span { font-weight: 600; font-size: var(--t-small); }
+.rform .field { display: grid; gap: 8px; align-content: start; }
+.rform .field.full { grid-column: 1 / -1; }
+.rform label { font-weight: 600; font-size: var(--t-small); }
+.error-msg { display: none; color: var(--red-2); font-size: var(--t-small); font-weight: 600; }
+.rform :user-invalid ~ .error-msg { display: block; }
+.rform :user-invalid { border-color: var(--red); background: #fff1f0; }
 .rform input, .rform select, .rform textarea { width: 100%; background: var(--paper); border: 1px solid #c4ccd4; padding: 14px 16px; border-radius: 0; }
 .rform input:focus, .rform select:focus, .rform textarea:focus { outline: none; border-color: var(--blue); background: #fff; }
-.rform input.is-bad { border-color: var(--red); }
 .rform button { justify-self: start; }
 
 /* заказчики */
@@ -412,10 +415,12 @@ a.ccard:hover small { color: #c9d3dd; }
 .cert { display: block; background: #fff; padding: 10px; transition: transform .4s var(--ease); }
 .cert:hover, .cert:focus-visible { transform: translateY(-6px); }
 .cert img { width: 100%; aspect-ratio: 200/283; object-fit: cover; object-position: top; }
-.lightbox { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; background: rgba(15, 29, 43, .92); padding: 24px; cursor: zoom-out; }
-.lightbox[hidden] { display: none; }
-.lightbox img { max-height: 90vh; width: auto; background: #fff; }
-.lightbox button { position: absolute; right: 16px; top: 12px; width: 48px; height: 48px; border: 0; background: #fff; font-size: 26px; cursor: pointer; }
+.lightbox { max-width: calc(100dvw - 32px); max-height: calc(100dvh - 32px); padding: 0; border: 0; background: #fff; overflow: visible; }
+.lightbox::backdrop { background: rgba(15, 29, 43, .9); }
+.lightbox img { max-height: calc(100dvh - 48px); width: auto; }
+.lightbox form { position: absolute; right: 8px; top: 8px; }
+.lightbox button { width: 48px; height: 48px; border: 0; background: var(--ink); color: #fff; font-size: 26px; cursor: pointer; }
+.lightbox button:hover { background: var(--red); }
 
 /* ---------------------------------------------------------------- появление (только если движение разрешено) */
 @media (prefers-reduced-motion: no-preference) {
@@ -489,3 +494,5 @@ a.ccard:hover small { color: #c9d3dd; }
 .band figure:hover img { transform: scale(1.04); }
 .band figcaption { position: absolute; left: 16px; bottom: 16px; padding: 8px 12px; background: rgba(15, 29, 43, .82); color: #fff; font-size: var(--t-small); }
 @media (max-width: 640px) { .band { grid-template-columns: 1fr; } .band figure { height: 46svh; } }
+
+.visually-hidden:where(:not(:focus-within, :active)) { position: absolute !important; clip-path: inset(50%) !important; overflow: hidden !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; border: 0 !important; white-space: nowrap !important; }
