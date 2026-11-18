@@ -135,7 +135,7 @@ for c in CATEGORIES:
 
 # кадры, снятые нашими приборами видеокаротажа
 WELL_FRAMES = ['ba951de225f5685b2383ecc0fe64f6ce.png', '04f973d653cbdf4ce1fdd0f4dc83f97d.png', '8cf62954d33382af36615d80acf99e5a.png', 'ac3b945362e7589de11262d1c85dbe9e.png',
-               '0f3b99fe24253df7782f19dee6f46f71.jpg', 'b8492c59dc7778bcf6763a5cbd29d5f4.gif',
+               '0f3b99fe24253df7782f19dee6f46f71.jpg', 'b8492c59dc7778bcf6763a5cbd29d5f4.webp',
                '11cc76ae2f1ca090471f399fd0474304.jpg', 'bca970c31d2f1830a36c48f5e870e577.png',
                '965c49e3b0650be2c92607c413f72dce.jpg', 'c76a382cc5c804c32361ad1989775b7c.jpg',
                '552c5fe26b8489434e3c5ae4ec1a5123.jpg', 'ece9d6f5ed2f47f7c2b90d7d3b8c2748.jpg']
@@ -341,6 +341,9 @@ def product_card(slug, i=0):
 def page_hero(title, lead, crumb_html, media, extra=''):
     """media: (src, alt, caption, kind) — kind 'object' для фото прибора на белом."""
     src, alt, cap, kind = media
+    large_photo = os.path.splitext(src)[0] + '-large.webp'
+    if os.path.isfile(os.path.join(HERE, 'static', large_photo)):
+        src = large_photo
     figcap = f'<figcaption>{e(cap)}</figcaption>' if cap else ''
     return f'''<section class="phero">
   <div class="phero-text">
