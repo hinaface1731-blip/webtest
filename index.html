@@ -1,10 +1,56 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<title>АСУ-ЭКСПЕРТ</title>
-<meta http-equiv="refresh" content="0; url=site/index.html">
-<link rel="canonical" href="site/index.html">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Три редизайна сайтов производителей геофизического оборудования: АСУ-ЭКСПЕРТ, КРУГЕО и NEMFIS.">
+  <title>Webtest — редизайны сайтов</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font: 100%/1.5 system-ui, sans-serif;
+      color: #172d2a;
+      background: #eef2e9;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    main { width: min(100% - 2rem, 54rem); margin-inline: auto; padding-block: clamp(3rem, 12vw, 8rem); }
+    h1, p { margin: 0; }
+    h1 { font-size: clamp(2.45rem, 7.5vw, 5.5rem); line-height: 1; letter-spacing: -.045em; }
+    p { margin-block: 1.1rem 2.75rem; max-width: 47ch; color: #425952; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { border-top: 1px solid #a8b6ad; }
+    li:last-child { border-bottom: 1px solid #a8b6ad; }
+    a {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: .15rem .75rem;
+      padding: 1.2rem .75rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover { background: #e1eadd; }
+    a:hover strong { text-decoration: underline; text-underline-offset: .2em; }
+    a:focus-visible { outline: 2px solid #236453; outline-offset: -2px; }
+    strong { font-size: clamp(1.2rem, 3.6vw, 1.75rem); line-height: 1.2; }
+    small { grid-column: 1; color: #425952; font-size: .9rem; }
+    .arrow { grid-area: 1 / 2 / span 2; width: .7rem; height: .7rem; border: solid currentColor; border-width: 2px 2px 0 0; transform: rotate(45deg); }
+  </style>
 </head>
-<body><a href="site/index.html">Перейти на сайт АСУ-ЭКСПЕРТ</a></body>
+<body>
+  <main>
+    <h1>Редизайны сайтов</h1>
+    <p>Три сайта производителей геофизического оборудования.</p>
+    <nav aria-label="Сайты">
+      <ul>
+        <li><a href="site/"><strong>АСУ-ЭКСПЕРТ</strong><small>Приборы для каротажа скважин</small><span class="arrow" aria-hidden="true"></span></a></li>
+        <li><a href="krugeo/"><strong>КРУГЕО</strong><small>Электроразведочная аппаратура и полевые работы</small><span class="arrow" aria-hidden="true"></span></a></li>
+        <li><a href="nemfis/"><strong>NEMFIS</strong><small>Приборы для электроразведки</small><span class="arrow" aria-hidden="true"></span></a></li>
+      </ul>
+    </nav>
+  </main>
+</body>
 </html>
