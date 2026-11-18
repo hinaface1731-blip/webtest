@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1f3ea">
+  <meta name="description" content="Каталог NEMFIS: приборы электромагнитного профилирования, электротомографии и программное обеспечение для обработки данных.">
+  <title>NEMFIS — электроразведочное оборудование</title>
+  <link rel="icon" href="assets/mark.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="catalog.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip" href="#main">К содержимому</a>
+  <header class="masthead">
+    <div class="shell header-row">
+      <a class="wordmark" href="./" aria-label="NEMFIS, главная" aria-current="page">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        NEMFIS
+      </a>
+      <nav class="primary" aria-label="Основная навигация">
+        <button class="menu-button" type="button" popovertarget="primary-links" aria-controls="primary-links" hidden>Меню <span class="menu-icon" aria-hidden="true"></span></button>
+        <ul class="primary-links" id="primary-links">
+          <li><a href="#catalog">Оборудование</a></li>
+          <li><a href="#applications">Применение</a></li>
+          <li><a href="#services">Услуги</a></li>
+          <li><a href="#support">Поддержка</a></li>
+        </ul>
+      </nav>
+      <a class="contact-link" href="#contacts">Контакты <span class="arrow northeast" aria-hidden="true"></span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <picture class="hero-photo">
+        <source media="(max-width: 640px)" srcset="assets/field-mobile.webp" width="720" height="639">
+        <img src="assets/field.webp" width="1600" height="682" alt="" fetchpriority="high">
+      </picture>
+      <div class="shell hero-inner">
+        <div class="hero-content">
+          <h1 id="hero-title">Приборы для <span>электроразведки</span></h1>
+          <p>Приборы для электромагнитного профилирования и электротомографии. От полевых измерений до интерпретации данных.</p>
+          <a class="button button-accent" href="#catalog">Смотреть каталог <span class="arrow down" aria-hidden="true"></span></a>
+        </div>
+        <p class="hero-caption">Иллюстрация полевых работ</p>
+      </div>
+    </section>
+
+    <nav class="methods" aria-label="Категории каталога">
+      <ul class="shell method-list">
+        <li><a href="#profiling" data-method="profiling"><span>Электромагнитное профилирование</span><span class="arrow northeast" aria-hidden="true"></span></a></li>
+        <li><a href="#tomography" data-method="tomography"><span>Электротомография</span><span class="arrow northeast" aria-hidden="true"></span></a></li>
+        <li><a href="#software" data-method="software"><span>Программное обеспечение</span><span class="arrow northeast" aria-hidden="true"></span></a></li>
+      </ul>
+    </nav>
+
+    <section class="shell catalog section-space" id="catalog" aria-labelledby="catalog-title">
+      <div class="section-heading">
+        <h2 id="catalog-title">Каталог приборов</h2>
+        <p>Профайлеры, комплексы электротомографии, программы и аксессуары.</p>
+      </div>
+      <div class="catalog-controls" hidden>
+        <div class="filter-list" role="group" aria-label="Фильтр каталога">
+          <button type="button" data-filter="all" aria-pressed="true">Всё</button>
+          <button type="button" data-filter="profiling" aria-pressed="false">Профилирование</button>
+          <button type="button" data-filter="tomography" aria-pressed="false">Электротомография</button>
+          <button type="button" data-filter="software" aria-pressed="false">ПО</button>
+          <button type="button" data-filter="other" aria-pressed="false">Другое</button>
+        </div>
+        <search class="catalog-search">
+          <label for="device-search" class="visually-hidden">Поиск по каталогу</label>
+          <span class="search-icon" aria-hidden="true"></span>
+          <input type="search" id="device-search" placeholder="Найти прибор">
+        </search>
+      </div>
+      <p class="visually-hidden" role="status" id="catalog-status"></p>
+      <div class="empty-state" hidden>
+        <p>По этому запросу ничего не найдено.</p>
+        <button type="button" class="text-button" id="reset-catalog">Сбросить фильтры</button>
+      </div>
+
+      <section class="product-group" id="profiling" aria-labelledby="profiling-title">
+        <h3 id="profiling-title">Электромагнитное профилирование</h3>
+        <ul class="product-grid product-grid-featured">
+          <li class="product" data-keywords="geovizer геовизер">
+            <a href="https://nemfis.ru/geovizer/">
+              <div class="product-image"><img src="assets/geovizer.webp" width="840" height="611" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>Геовизер</h4><p>Компактный электромагнитный профайлер</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+          <li class="product" data-keywords="aemp aemp14 аэмп14">
+            <a href="https://nemfis.ru/aemp-14/">
+              <div class="product-image"><img src="assets/aemp.webp" width="500" height="205" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>АЭМП-14</h4><p>Многочастотный электромагнитный профайлер</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="product-group" id="tomography" aria-labelledby="tomography-title">
+        <h3 id="tomography-title">Электротомография</h3>
+        <ul class="product-grid">
+          <li class="product" data-keywords="skala siber 48">
+            <a href="https://nemfis.ru/siber-48/">
+              <div class="product-image"><img src="assets/skala.webp" width="500" height="214" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>Скала 48</h4><p>Одноканальный комплекс</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+          <li class="product" data-keywords="skala siber 48k12">
+            <a href="https://nemfis.ru/siber-48k12/">
+              <div class="product-image"><img src="assets/skala-48k12.webp" width="250" height="107" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>Скала 48К12</h4><p>12-канальный комплекс</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+          <li class="product" data-keywords="skala siber 64k15">
+            <a href="https://nemfis.ru/siber-64k15/">
+              <div class="product-image"><img src="assets/skala-64k15.webp" width="250" height="107" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>Скала 64К15</h4><p>15-канальный комплекс</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="product-group" id="software" aria-labelledby="software-title">
+        <h3 id="software-title">Программное обеспечение</h3>
+        <ul class="product-grid product-grid-featured">
+          <li class="product" data-keywords="ertlab ert lab эртлаб">
+            <a href="https://nemfis.ru/products/ertlab/">
+              <div class="product-image"><img src="assets/ert.webp" width="250" height="108" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>ERT-Lab</h4><p>3D-инверсия данных электротомографии</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+          <li class="product">
+            <a href="https://terrazond.ru/">
+              <div class="product-image"><img src="assets/zond.webp" width="250" height="108" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>ZondRes2D</h4><p>2D-инверсия данных электротомографии</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="product-group" id="other" aria-labelledby="other-title">
+        <h3 id="other-title">Аксессуары и продукция партнёров</h3>
+        <ul class="product-grid">
+          <li class="product">
+            <a href="https://nemfis.ru/%d0%b0%d0%ba%d1%81%d1%81%d0%b5%d1%81%d1%83%d0%b0%d1%80%d1%8b/">
+              <div class="product-image"><img src="assets/accessories.webp" width="250" height="107" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>Аксессуары</h4><p>Косы, клипсы, электроды и кабели</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+          <li class="product" data-keywords="landmapper erm-xx">
+            <a href="https://nemfis.ru/products/landmapper-erm-2/">
+              <div class="product-image"><img src="assets/land.webp" width="250" height="107" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>LandMapper ERM-02</h4><p>Измерение электрического сопротивления грунта</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+          <li class="product">
+            <a href="https://terrazond.ru/">
+              <div class="product-image"><img src="assets/grt.webp" width="250" height="108" alt="" loading="lazy"></div>
+              <div class="product-body"><div><h4>ГРТ-ХХ</h4><p>Георадиотомограф</p></div><span class="arrow northeast" aria-hidden="true"></span></div>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </section>
+
+    <section class="applications" id="applications" aria-labelledby="applications-title">
+      <div class="shell section-space">
+        <div class="section-heading">
+          <h2 id="applications-title">Где применяют приборы</h2>
+        </div>
+        <ul class="application-list">
+          <li><a href="https://nemfis.ru/applications/археология/"><span><strong>Археология</strong><small>Поиск и картирование археологических объектов</small></span><span class="arrow northeast" aria-hidden="true"></span></a></li>
+          <li><a href="https://nemfis.ru/applications/инженерная-геология/"><span><strong>Инженерная геология</strong><small>Изыскания для строительства и поиск подземных коммуникаций</small></span><span class="arrow northeast" aria-hidden="true"></span></a></li>
+          <li><a href="https://nemfis.ru/applications/ecology/"><span><strong>Экология</strong><small>Оценка загрязнения почв и мониторинг объектов</small></span><span class="arrow northeast" aria-hidden="true"></span></a></li>
+          <li><a href="https://nemfis.ru/applications/agronomy/"><span><strong>Точное земледелие</strong><small>Оценка свойств и неоднородности почв</small></span><span class="arrow northeast" aria-hidden="true"></span></a></li>
+          <li><a href="https://nemfis.ru/applications/другие-задачи/"><span><strong>Другие задачи</strong><small>Примеры применения геофизических методов</small></span><span class="arrow northeast" aria-hidden="true"></span></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="shell section-space information">
+      <section class="services" id="services" aria-labelledby="services-title">
+        <h2 id="services-title">Полевые работы</h2>
+        <p>Организуем геофизические исследования, обрабатываем и интерпретируем данные.</p>
+        <a class="inline-link" href="https://nemfis.ru/service/">Услуги NEMFIS <span class="arrow northeast" aria-hidden="true"></span></a>
+        <img src="assets/survey.webp" width="500" height="333" alt="Специалист с профайлером Геовизер на полевых измерениях" loading="lazy">
+      </section>
+      <section class="support" id="support" aria-labelledby="support-title">
+        <h2 id="support-title">Поддержка</h2>
+        <ul class="support-list">
+          <li><a href="https://nemfis.ru/support/soft/">Программы и обновления <span class="arrow northeast" aria-hidden="true"></span></a></li>
+          <li><a href="https://nemfis.ru/support/видеоинструктаж/">Видеоинструкции <span class="arrow northeast" aria-hidden="true"></span></a></li>
+          <li><a href="https://nemfis.ru/support/knowhow/">База знаний <span class="arrow northeast" aria-hidden="true"></span></a></li>
+          <li><a href="https://nemfis.ru/support/faq/">Частые вопросы <span class="arrow northeast" aria-hidden="true"></span></a></li>
+          <li><a href="https://nemfis.ru/support/warranty/">Гарантия <span class="arrow northeast" aria-hidden="true"></span></a></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer" id="contacts">
+    <div class="shell">
+      <div class="footer-main">
+        <div>
+          <h2>Связаться с NEMFIS</h2>
+          <p>По вопросам подбора оборудования и проведения исследований.</p>
+          <a class="button button-accent" href="https://nemfis.ru/contacts/">Все контакты <span class="arrow northeast" aria-hidden="true"></span></a>
+        </div>
+        <address class="phones">
+          <div><span>Москва</span><a href="tel:+74957894989">+7 (495) 789-49-89</a></div>
+          <div><span>Новосибирск</span><a href="tel:+73832278421">+7 (383) 227-84-21</a></div>
+        </address>
+      </div>
+      <div class="footer-end">
+        <a class="wordmark" href="#top" aria-label="NEMFIS, к началу страницы">NEMFIS</a>
+        <nav aria-label="О компании">
+          <a href="https://nemfis.ru/contacts/about-us/">О компании</a>
+          <a href="https://nemfis.ru/новости/">Новости</a>
+          <a href="https://nemfis.ru/gallery/">Галерея</a>
+          <a href="https://www.kbelectrometry.ru/">КБ Электрометрии <span class="arrow northeast" aria-hidden="true"></span></a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
