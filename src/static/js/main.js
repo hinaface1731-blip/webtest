@@ -35,16 +35,19 @@
   const stage = $('.stage');
   if (stage) {
     const figs = $$('figure', stage);
+    const narrowStage = matchMedia('(max-width: 1000px)');
     const show = (i) => figs.forEach((f) => {
       const on = f.dataset.stage === String(i);
       f.classList.toggle('is-on', on);
-      const v = f.querySelector('video');
-      if (v) { if (on && !reduce) v.play().catch(() => {}); else v.pause(); }
+      f.setAttribute('aria-hidden', String(!on));
     });
     const sio = new IntersectionObserver((entries) => entries.forEach((en) => {
-      if (en.isIntersecting) show(en.target.dataset.stage);
+      if (!narrowStage.matches && en.isIntersecting) show(en.target.dataset.stage);
     }), { rootMargin: '-45% 0px -45% 0px' });
     $$('.reading [data-stage]').forEach((s) => sio.observe(s));
+    narrowStage.addEventListener('change', () => {
+      if (narrowStage.matches) show(0);
+    });
   }
 
   /* ---------- подбор прибора по методам */
